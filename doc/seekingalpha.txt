@@ -1,0 +1,101 @@
+SeekingAlpha - Data Description
+
+s3://oprtest/data/seeking_alpha/sa_articles_new.csv
+s3://oprtest/data/seeking_alpha/sa_draft_articles_sid_2.csv
+s3://oprtest/data/seeking_alpha/sa_private_articles_sid_3.csv
+s3://oprtest/data/seeking_alpha/sa_removed_articles.csv 
+s3://oprtest/data/seeking_alpha/sa_stub_articles_sid_4.csv
+
+In order to get the transcripts, you need to use this document and join by "id":
+
+s3://oprtest/data/seeking_alpha/it_articles_new.csv
+
+Filter for "is_transcript" == 1
+
+Column headers are in  Avro record in VendorSeekingAlpha.avdl:
+
+record ITArticlesAbout {
+
+int id;
+// article id. each id is unique
+int instablog_id;
+// if author has instablog (null if no instablog)
+string author;
+// author name
+int author_tag_id;
+// used to find author in other tables
+string title;
+// article title
+int word_count;
+// number of words in article
+int is_premium;
+// indicates whether the article is a premium or not
+string sector;
+// sector covered
+string industry;
+// industry covered
+string country;
+// country discussed in article
+string theme;
+// theme of article
+string dashboard;
+// which category of dashboard contains article
+string more_tags;
+// e.g. "pro articles", "Alpha Rich", "Small Cap Insight"
+string primary_ticker;
+// primary ticker covered
+string primary_ticker_slugs;
+// lower case version of ticker
+string all_tickers;
+// other tickers covered
+string publish_datetime;
+int is_transcript;
+// indicates whether the article is a transcript
+int emailed_realtime;
+// indicates whether the article was/will be send as RTA
+int email_count;
+// number of shares for the article
+int comment_count;
+// number of comments
+string pro_publish_on;
+// if article is pro, date it was published
+string archive_on;
+// 30 days after published for pro user
+string scoring_created_at;
+// if article has a score (only when pro with 3 exceptions)
+string scoring_updated_at;
+// if article has a score (only when pro with 3 exceptions)
+string scoring_fields;
+// info such as tickers, theme, status, author
+string scoring_comment;
+// contains editor comments
+double score_convincing;
+// 0 to 4.  4 = more convincing
+double score_actionable;
+// 0 to 4.  4 = more actionable
+double score_well_presented;
+// 0 to 4.  4 = well presented
+double score_aggregate;
+// score from 0 to 4
+int is_editor_pick;
+// indicates whether article is an editors pick or not
+int is_proofread;
+// indicates whether the article has been proofread or not
+string investment_style_slug;
+// investment value of covered stock (value, groth, other)
+string opportunity_slug;
+// opportunity described (44 possible)
+int has_summary;
+// indicates whether the article has a summary or not
+int is_micro_cap;
+// indicates whether stock is microcap
+int case;
+// indicates what position is discussed in the article
+}
+
+The following module, “com.opr.seekingalphar.ExtractFiles.java” extracts HTML articles to separate file, naming them according to the information in the extracted file:
+
+id (space) title.html
+
+These are fed to FreeEed on OPR1 (which is a fast machine with enough hard drive space).
+

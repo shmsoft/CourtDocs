@@ -1,0 +1,8 @@
+output/
+.idea/
+*.iml
+target/
+output/
+*~
+test-output/
+logs/

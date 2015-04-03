@@ -17,8 +17,6 @@ import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
  *
  * Extract images from PDF files, if any.
  *
- * @author ilazarov
- *
  */
 public class PDFImageExtractor extends ImageExtractor {
 

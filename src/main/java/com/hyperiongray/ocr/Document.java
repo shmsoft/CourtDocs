@@ -24,7 +24,6 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * Provide methods for detecting if a given file is an image, or if the provided document contains images.
  *
- * @author ilazarov
  *
  */
 public class Document {

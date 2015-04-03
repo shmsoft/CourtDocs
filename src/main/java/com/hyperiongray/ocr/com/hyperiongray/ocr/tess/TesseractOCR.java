@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
  *
  * Class TesseractOCR.
  *
- * @author ilazarov
- *
  */
 public class TesseractOCR implements OCREngine {
     private static final Logger logger = LoggerFactory.getLogger(TesseractOCR.class);

@@ -8,8 +8,6 @@ import java.util.List;
  *
  * Super class for all image extractors based on their type.
  *
- * @author ilazarov
- *
  */
 public abstract class ImageExtractor {
 

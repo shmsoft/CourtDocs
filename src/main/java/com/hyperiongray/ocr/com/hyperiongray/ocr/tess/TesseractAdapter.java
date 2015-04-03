@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
  *
  * Call OS specific command for tesseract.
  *
- * @author ilazarov
- *
  */
 public class TesseractAdapter {
 

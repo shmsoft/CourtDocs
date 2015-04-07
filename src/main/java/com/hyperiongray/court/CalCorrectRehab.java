@@ -1,28 +1,41 @@
 package com.hyperiongray.court;
 
+import com.google.common.io.Files;
+import com.hyperiongray.pull.CalCorrectRehabGetPull;
+import com.hyperiongray.pull.GetPull;
 import org.apache.commons.cli.*;
+import org.apache.tika.Tika;
+import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CalCorrectRehab {
-    private static String startPage = "http://www.cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly/Monthly_Tpop1a_Archive.html";
+    private static String siteToAnalyze = "http://www.cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly/Monthly_Tpop1a_Archive.html";
+    private static String linkRoot = "http://www.cdcr.ca.gov/Reports_Research/Offender_Information_Services_Branch/Monthly";
 
     private static final Logger logger = LoggerFactory.getLogger(CalCorrectRehab.class);
     private static Options options;
     private String outputFileName;
+    private int limit;
     private boolean zipThrough;
+    private Date startTime;
+    private Date stopTime;
+    private long documentsCollected;
 
-    private long totalInputLines;
-    private long totalImagesToProcess;
-    private long totalImagesSuccessfullyProcessed;
-    private long totalLinesWithImages;
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         formOptions();
         if (args.length == 0) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("MemexOCR - downloads and OCR's images in a CCA file", options);
+            formatter.printHelp("CalCorrectRehab - downloads and summarize PDF reports", options);
             return;
         }
         // TODO parse and use options
@@ -31,16 +44,16 @@ public class CalCorrectRehab {
             if (!instance.parseParameters(args)) {
                 return;
             }
+            instance.startTime = new Date();
+            instance.stopTime = instance.startTime;
             instance.downloadAndParse();
         } catch (Exception e) {
             e.printStackTrace();
         }
         String stats = "Processing stats:" + "\n" +
-                "Lines processed: " +
-                "Lines processed: " + instance.totalInputLines + "\n" +
-                "Lines with images: " + instance.totalLinesWithImages + "\n" +
-                "Number of images to process: " + instance.totalImagesToProcess + "\n" +
-                "Number of images successfully processed: " + instance.totalImagesSuccessfullyProcessed;
+                "Site to analyze: " + siteToAnalyze + "\n" +
+                "Documents processed: " + instance.documentsCollected + "\n" +
+                "Processing time (sec): " + instance.getProcessingTime();
         System.out.println(stats);
 
     }
@@ -48,13 +61,18 @@ public class CalCorrectRehab {
     private static void formOptions() {
         options = new Options();
         options.addOption("o", "output", true, "Output file");
+        options.addOption("l", "limit", true, "Limit how many PDF to process (for testing)");
         options.addOption("z", "zipThrough", false, "Zip through the input web site but don't download or analyze PDF's");
     }
+
     private boolean parseParameters(String[] args) throws ParseException {
         CommandLineParser parser = new GnuParser();
         CommandLine cmd = parser.parse(options, args);
         outputFileName = cmd.getOptionValue("output");
-        zipThrough = cmd.hasOption("zipthrough");
+        if (cmd.hasOption("limit")) {
+            limit = Integer.parseInt(cmd.getOptionValue("limit"));
+        }
+        zipThrough = cmd.hasOption("zipThrough");
         if (!zipThrough) {
             if (outputFileName == null) {
                 System.out.println("Please provide output file name");
@@ -63,7 +81,43 @@ public class CalCorrectRehab {
         }
         return true;
     }
-    private void downloadAndParse() throws IOException {
 
+    private void downloadAndParse() throws IOException, TikaException {
+        // it is a small collection, get it all
+        CalCorrectRehabGetPull pull = new CalCorrectRehabGetPull();
+        pull.setStartPage(siteToAnalyze);
+        List<String> docCollection = pull.getPdfCollection();
+        Tika tika = new Tika();
+        for (String pdfLink : docCollection) {
+            ++documentsCollected;
+            if (limit > 0 && documentsCollected > limit) {
+                break;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            new File(new File(outputFileName).getParent()).mkdirs();
+            appendToOutput("File: " + pdfLink);
+            String pdfText = tika.parseToString(new URL(linkRoot + "/" + pdfLink));
+            // Files.write(pdfText, new File("test-output/pdf-txt.txt"), Charset.defaultCharset());
+            writeStats(pdfText);
+        }
+
+    }
+
+    private long getProcessingTime() {
+        return (stopTime.getTime() - startTime.getTime()) / 1000;
+    }
+
+    private void writeStats(String pdfText) throws IOException {
+        Matcher m = Pattern.compile("TOTAL IN-CUSTODY\\s*\\d*,*\\d*").matcher(pdfText);
+        while (m.find()) {
+            appendToOutput(m.group());
+        }
+    }
+
+    private void appendToOutput(String text) throws IOException {
+        Files.append(text + "\n", new File(outputFileName), Charset.defaultCharset());
     }
 }

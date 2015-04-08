@@ -36,7 +36,7 @@ public class CalCorrectRehabGetPull extends GetPull {
         getRequest.setUrl(startPage);
         String pageHtml = getRequest.getResponse();
         // write is just for debugging
-        Files.write(pageHtml, new File("output/cal.html"), Charset.defaultCharset());
+        Files.write(pageHtml, new File("test-output/cal.html"), Charset.defaultCharset());
         return getAllPdfLinks(pageHtml);
     }
 

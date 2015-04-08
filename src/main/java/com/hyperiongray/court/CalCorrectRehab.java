@@ -28,8 +28,19 @@ public class CalCorrectRehab {
     private int limit;
     private boolean zipThrough;
     private Date startTime;
-    private Date stopTime;
     private long documentsCollected;
+
+    private final static String[] regex = {
+            "TOTAL IN-CUSTODY\\s*\\d+,*\\d*",
+            "IN-STATE\\s*\\d+,*\\d*",
+            "INSTITUTIONS/CAMPS\\s*\\d+,*\\d*",
+            "IN-STATE CONTRACT BEDS\\s*\\d+,*\\d*",
+            "DMH STATE HOSPITALS\\s*\\d+,*\\d*",
+            "OUT OF STATE(COCF)\\s*\\d+,*\\d*",
+            "PAROLE\\s*\\d+,*\\d*",
+            "NON-CDC JURISDICTION #4\\s*\\d+,*\\d*",
+            "OTHER POPULATIONS #6\\s*\\d+,*\\d*"
+    };
 
     public static void main(String[] args) {
         formOptions();
@@ -45,7 +56,6 @@ public class CalCorrectRehab {
                 return;
             }
             instance.startTime = new Date();
-            instance.stopTime = instance.startTime;
             instance.downloadAndParse();
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +104,7 @@ public class CalCorrectRehab {
                 break;
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
             }
             new File(new File(outputFileName).getParent()).mkdirs();
@@ -107,17 +117,27 @@ public class CalCorrectRehab {
     }
 
     private long getProcessingTime() {
-        return (stopTime.getTime() - startTime.getTime()) / 1000;
+        return (new Date().getTime() - startTime.getTime()) / 1000;
     }
 
     private void writeStats(String pdfText) throws IOException {
-        Matcher m = Pattern.compile("TOTAL IN-CUSTODY\\s*\\d*,*\\d*").matcher(pdfText);
-        while (m.find()) {
-            appendToOutput(m.group());
+
+        for (String reg: regex) {
+            Matcher m = Pattern.compile(reg).matcher(pdfText);
+            while (m.find()) {
+                appendToOutput(m.group());
+            }
         }
     }
 
     private void appendToOutput(String text) throws IOException {
         Files.append(text + "\n", new File(outputFileName), Charset.defaultCharset());
+    }
+    private void prepareOutput() {
+        if (outputFileName != null) {
+            new File(new File(outputFileName).getParent()).mkdirs();
+            new File(outputFileName).delete();
+        }
+
     }
 }

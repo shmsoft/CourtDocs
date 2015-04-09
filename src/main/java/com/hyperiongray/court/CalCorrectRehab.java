@@ -110,7 +110,10 @@ public class CalCorrectRehab {
             new File(new File(outputFileName).getParent()).mkdirs();
             appendToOutput("File: " + pdfLink);
             String pdfText = tika.parseToString(new URL(linkRoot + "/" + pdfLink));
-            // Files.write(pdfText, new File("test-output/pdf-txt.txt"), Charset.defaultCharset());
+            // this is only for storage, but for actual results the next two lines are not needed
+            new File("test-output/pdf-txt").mkdirs();
+            Files.write(pdfText, new File("test-output/pdf-txt/" + new File(pdfLink).getName() + ".txt"), Charset.defaultCharset());
+            // ---------------------
             writeStats(pdfText);
         }
 

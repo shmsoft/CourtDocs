@@ -1,5 +1,8 @@
 package com.hyperiongray.court;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +14,8 @@ import java.util.regex.Pattern;
  * Util for NY Appeal web site doc download
  */
 public class NYAppealUtil {
+    private static final Logger logger = LoggerFactory.getLogger(NYAppealUtil.class);
+
     private static final String base = "http://www.courts.state.ny.us/reporter/slipidx/aidxtable";
     private static final List <String> months = Arrays.asList("january", "february", "march", "april",
             "may", "june", "july", "august", "september", "october", "november", "december");
@@ -44,5 +49,12 @@ public class NYAppealUtil {
             list.add(downloadBase + m.group());
         }
         return list;
+    }
+    public static void sleep(long milliSeconds) {
+        try {
+            Thread.sleep(milliSeconds);
+        } catch (InterruptedException e) {
+            logger.info("Sleep interrupted");
+        }
     }
 }

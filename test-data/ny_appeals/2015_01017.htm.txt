@@ -1,0 +1,106 @@
+
+	HSBC Bank USA, N.A. v Prime, L.L.C.
+	2015 NY Slip Op 01017 [125 AD3d 1307]
+	February 6, 2015
+	Appellate Division, Fourth Department
+	Published by New York State Law Reporting
+Bureau pursuant to Judiciary Law § 431.
+	As corrected through Wednesday, April 1, 2015
+
+
+
+
+
+
+
+[*1]
+
+	 HSBC Bank USA, National Association, Respondent, v
+Prime, L.L.C., et al., Appellants, et al., Defendants.
+
+
+
+
+
+McMahon, Kublick & Smith, P.C., Syracuse (Jan S. Kublick of counsel), for
+defendants-appellants.
+
+Phillips Lytle LLP, Rochester (Mark J. Moretti of counsel), for
+plaintiff-respondent.
+
+
+
+
+
+Appeal from an order of the Supreme Court, Jefferson County (James P. McClusky,
+J.), entered December 18, 2013. The order, inter alia, granted summary judgment to
+plaintiff.
+
+It is hereby ordered that the order so appealed from is unanimously affirmed without
+costs.
+
+Memorandum: Plaintiff commenced this foreclosure action after Prime, L.L.C.
+(Prime) and Philip J. Simao (collectively, defendants) defaulted on a note executed by
+Prime and guaranteed by Simao. Defendants appeal from an order that granted plaintiff's
+motion for, inter alia, summary judgment on the complaint pursuant to CPLR 3212,
+dismissal of defendants' counterclaims and the appointment of a referee to compute
+plaintiff's damages. We reject at the outset defendants' contention that Supreme Court
+should have treated plaintiff's motion for summary judgment pursuant to CPLR 3212 as a
+motion to dismiss based upon documentary evidence pursuant to CPLR 3211 (a) (1).
+Contrary to defendants' contention, the mere fact that plaintiff relies on documentary
+evidence, i.e., a forbearance agreement containing a release, in support of its motion does
+not alter the fact that it is a motion for summary judgment (see e.g. Bronson v Hansel, 16
+NY3d 850, 851 [2011]). Defendants' contention that plaintiff's motion should have
+been treated as a CPLR 3211 motion to dismiss because issue had not been joined with
+respect to plaintiff's affirmative defense of release is raised for the first time in their reply
+brief and thus is not properly before us (see Turner v Canale, 15 AD3d 960, 961 [2005], lv
+denied 5 NY3d 702 [2005]).
+
+We likewise reject defendants' contention that the court erred in granting plaintiff's
+motion before discovery was complete. Defendants "failed to demonstrate that facts
+essential to oppose the motion were in plaintiff's exclusive knowledge and possession
+and could be obtained by discovery" (Franklin v Dormitory Auth. of State of
+N.Y., 291 AD2d 854, 854 [2002]; see CPLR 3212 [f]; Avraham v Allied Realty
+Corp., 8 AD3d 1079, 1079 [2004]), and the " 'mere hope that somehow
+[defendants] will uncover evidence that will prove [their] case is not sufficient to defeat a
+motion for summary judgment' " (Rowland v Wilmorite, Inc., 68 AD3d 1770, 1771
+[2009]).
+
+We conclude with respect to the merits of that part of plaintiff's motion for summary
+judgment on the complaint that plaintiff "established [its] prima facie entitlement to
+summary judgment as a matter of law by submitting the mortgage, the underlying note,
+and evidence of a default" (Ferri
+v Ferri, 71 AD3d 949, 949 [2010]), and defendants "failed to 'demonstrate the
+existence of a triable issue of fact regarding a bona fide defense to the action' "
+(Ekelmann Group, LLC v Stuart [appeal No. 2], 108 AD3d 1098, 1099 [2013];
+see Dasz, Inc. v Meritocracy
+Ventures, Ltd., 108 AD3d 1084, 1084 [2013]). Contrary to defendants'
+contention, there is no issue of fact concerning its [*2]defense that plaintiff breached the implied covenant of fair
+dealing by increasing the interest rate on the note by three percent retroactively to the
+date of the default. Here, the note expressly provided that upon default the interest rate
+would increase by three percent, and "[n]o obligation can be implied . . .
+[that] would be inconsistent with other terms of the contractual relationship" (Murphy
+v American Home Prods. Corp., 58 NY2d 293, 304 [1983]; see Marine Midland
+Bank v Yoruk, 242 AD2d 932, 933 [1997]).
+
+Also contrary to defendants' contention, the court properly considered plaintiff's
+defense of release in granting that part of plaintiff's motion to dismiss the counterclaims
+despite the fact that the defense was not pleaded in plaintiff's reply. " '[A] court
+may grant summary judgment based upon an unpleaded defense where[,] [as here,]
+reliance upon that defense neither surprises nor prejudices the [other party]' " (Schaefer v Town of Victor, 77
+AD3d 1346, 1347 [2010]; see Syracuse Equip. Co. v Lebis Contr., 255
+AD2d 992, 993 [1998]). Defendants failed to establish any prejudice or surprise with
+respect to the unpleaded defense of release (see Schaefer, 77 AD3d at 1347). We
+further conclude that, contrary to defendants' contention, they "failed to raise a triable
+issue of fact with respect to their claim that the release is void based on fraud"
+(Marlowe v Muhlnickel, 294 AD2d 830, 831 [2002]; see generally Centro Empresarial
+Cempresa S.A. v América Móvil, S.A.B. de C.V., 17 NY3d 269,
+276 [2011]).
+
+Finally, defendants' contention that their counterclaims should have been severed
+from plaintiff's foreclosure action is not properly before us inasmuch as it is raised for the
+first time on appeal (see Ciesinski v Town of Aurora, 202 AD2d 984, 985
+[1994]). Present—Scudder, P.J., Fahey, Peradotto, Carni and Whalen, JJ.
+
+
+

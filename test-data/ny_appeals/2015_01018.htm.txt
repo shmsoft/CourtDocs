@@ -1,0 +1,185 @@
+
+	Matter of D'Alessandro v Kirkmire
+	2015 NY Slip Op 01018 [125 AD3d 1309]
+	February 6, 2015
+	Appellate Division, Fourth Department
+	Published by New York State Law Reporting
+Bureau pursuant to Judiciary Law § 431.
+	As corrected through Wednesday, April 1, 2015
+
+
+
+
+
+
+
+[*1]
+
+	 In the Matter of Mary D'Alessandro, on Behalf of
+Vallemaio Properties, LLC, et al., Appellants, et al., Petitioner-Plaintiff, v Gary
+Kirkmire, Director of Inspection and Compliance Services, Bureau of Neighborhood
+Service Center of City of Rochester, et al., Respondents.
+
+
+
+
+
+Santiago Burger Annechino LLP, Rochester (Michael A. Burger of counsel), for
+petitioners-plaintiffs-appellants.
+
+Robert J. Bergin, Corporation Counsel, Rochester (John M. Campolieto of counsel),
+for respondents-defendants-respondents.
+
+Dibble & Miller, P.C., Rochester (Craig D. Chartier of counsel), for the New
+York State Coalition of Property Owners & Businesses, Inc., amicus curiae.
+
+
+
+
+
+Appeal from a judgment (denominated order and judgment) of the Supreme Court,
+Monroe County (Evelyn Frazee, J.), entered August 3, 2012 in a CPLR article 78
+proceeding and declaratory judgment action. The judgment, inter alia, declared that the
+case management fees imposed by defendant-respondent City of Rochester under section
+90-21 of the Municipal Code are valid, constitutional and legally imposed.
+
+It is hereby ordered that the judgment so appealed from is unanimously reversed on
+the law without costs, the motion of petitioners-plaintiffs for summary judgment is
+granted, the cross motion of respondents-defendants for summary judgment is denied, the
+determinations against petitioners-plaintiffs David Bonis, Deborah Burns and Bruce T.
+Henry are annulled and judgment is granted in favor of petitioners-plaintiffs-appellants
+as follows: It is adjudged and declared that section 90-21 of the Municipal Code of the
+City of Rochester is unconstitutional under the United States and New York
+Constitutions.
+
+Memorandum: Petitioners-plaintiffs (petitioners) commenced this hybrid CPLR
+article 78 proceeding and declaratory judgment action seeking, inter alia, to declare
+section 90-21 of the Municipal Code of the City of Rochester (Code) unconstitutional.
+That section of the Code permits respondent-defendant City of Rochester (City) to collect
+a "case management fee" (CMF) of $100 in any case in which a property owner has
+failed, for over one year, to comply with a notice and order notifying that owner of Code
+violations related to the property (Code § 90-21). The explicit intent of the
+CMF is "to obtain some reimbursement for the cost of [property] inspections and to
+reduce the number of [notice and order] cases" (§ 90-21 [A]). The CMF is
+assessed by the Director of Inspection and Compliance Services (Director) based upon
+his or her review of the "case file" (§ 90-21 [F]). A property owner may
+protest the CMF "in a writing delivered to the Director . . . within 10
+business days from the date of the notice of assessment" (id.). That same Director
+must then "review the case file and the written submission of the owner and make a
+determination on the protest in writing within 10 business days from the [*2]date of the protest" (id.). The determination of the
+Director "shall be the final determination of the City . . . and shall be subject
+to review pursuant to [CPLR] [a]rticle 78" (id.). In the event that the CMF
+remains unpaid after 60 days, it shall become a lien against the property and, if unpaid on
+May 1, shall be added to the property taxes for that property (see
+§ 90-21 [D]).
+
+Respondent-defendant Gary Kirkmire, in his official capacity as the Director,
+imposed CMFs on petitioners, although he eventually waived the CMFs imposed on
+certain petitioners, finding that those CMFs were erroneously imposed. After petitioners
+commenced this proceeding/action, they moved for summary judgment on the
+petition/complaint and sought a judgment declaring that section 90-21 is invalid, that it
+impermissibly authorizes the imposition of the CMF without a trial and that defendants
+may not collect the CMF from property owners in the City or place an unpaid CMF on
+the property tax bills. Respondents-defendants (respondents) moved to dismiss the
+petition/complaint, and Supreme Court issued an order converting that motion, upon the
+consent of the parties, into a cross motion for summary judgment. The court also
+enjoined the City from imposing any further CMFs on petitioners or placing any further
+CMFs, penalties or interest on petitioners' property tax bills.
+
+Following additional submissions by the parties, the court issued a judgment
+declaring that section 90-21 is constitutional and that the CMFs imposed by section
+90-21 were valid and were constitutionally and legally imposed. The court further
+vacated the injunction previously imposed, concluded that petitioners were not denied
+procedural due process and confirmed the determinations of the Director with respect to
+petitioners David Bonis, Deborah Burns and Bruce T. Henry, for whom the CMFs were
+not waived. We now reverse.
+
+The appealing petitioners contend that the CMF imposed by Code
+§ 90-21 is, in actuality, a fine, and that it is imposed upon property owners
+without due process. We agree. Although "[t]he exceedingly strong presumption of
+constitutionality applies . . . to ordinances of municipalities[,]
+. . . [that] presumption is rebuttable" (Lighthouse Shores v Town of
+Islip, 41 NY2d 7, 11-12 [1976]; see Matter of Turner v Municipal Code Violations Bur. of City of
+Rochester, 122 AD3d 1376, 1377 [2014]), and we conclude that petitioners
+have rebutted the presumption of constitutionality. We therefore reverse the judgment
+and grant judgment in favor of the appealing petitioners, declaring that section 90-21 is
+unconstitutional.
+
+A determination whether the CMF is a fee or a fine imposed as a penalty is critical to
+our analysis because "[p]rocedural due process rights do not apply to legislation of
+general applicability," and thus the imposition of fees such as licensing fees are "not
+subject to attack on grounds of procedural due process. Fines [that are imposed as a
+penalty], however, can implicate procedural due process rights" (Jones v
+Wildgen, 320 F Supp 2d 1116, 1127 [D Kan 2004], reconsideration granted in
+part on other grounds 349 F Supp 2d 1358 [2004]; see Twin Lakes Dev. Corp. v Town
+of Monroe, 1 NY3d 98, 106-107 [2003], cert denied 541 US 974
+[2004]). Respondents contend that the CMF is a fee charged in exchange for a service or
+benefit, i.e., the numerous inspections of the property while the notice and order is in
+effect. In our view, the CMF is the equivalent of a fine imposed as a penalty, i.e., a sum
+of money required to be paid as a result of either "doing some act which is prohibited, or
+omitting to do some act which is required to be done" (City of Buffalo v
+Neubeck, 209 App Div 386, 388 [1924]; see Matter of Dumbarton Oaks Rest.
+& Bar v New York State Liq. Auth., 58 NY2d 89, 93-94 [1983]). The CMF is
+assessed only after respondents have determined that a property owner has violated the
+Code in the first instance and that the property owner has failed to abate those violations
+within one year.
+
+It is well settled that states may not "deprive any person of life, liberty, or property,
+without due process of law" (US Const, 14th Amend, § 1; see NY
+Const, art I, § 6). Having concluded that the CMF is a fine imposed as a
+penalty on the property owner, we must determine whether the ordinance provides
+property owners with due process of law. As the Court of Appeals wrote in
+Morgenthau v Citisource, Inc. (68 NY2d 211 [1986]), "[w]e have long
+recognized that 'due process is a flexible constitutional concept calling for such
+procedural protections as a particular situation may demand' . . . [,] and in
+determining whether [f]ederal due process standards have been met, we look to the three
+distinct factors that form the balancing test enunciated by the Supreme Court in
+Mathews v Eldridge (424 US 319, 335 [1976]): 'First, the private interest that
+will be affected by the official action; second, the risk of an erroneous deprivation of
+such interest through the procedures used, and the probable value, if any, of additional or
+substitute procedural safeguards; and finally, the Government's interest, including the
+function [*3]involved and the fiscal and administrative
+burdens that the additional or substitute procedural requirement would entail' "
+(id. at 221).
+
+While we agree with the court that the private interest at stake, i.e., $100, "is
+relatively insubstantial," we conclude that there is a significant risk of erroneous
+deprivation of that interest through the procedures established by the ordinance.
+Petitioners submitted evidence establishing that, of the 583 CMFs challenged, 392 were
+voided. Indeed, as noted above, three of the petitioners had their CMFs waived as
+erroneously imposed. We reject the contention of respondents that such evidence
+establishes that the procedures are "obviously effective." In our view, it establishes a
+serious flaw in the system.
+
+Although " '[d]ue process does not, of course, require that the defendant in
+every civil case actually have a hearing on the merits' " (Curiale v Ardra Ins.
+Co., 88 NY2d 268, 274 [1996], quoting Boddie v Connecticut, 401 US 371,
+378 [1971]), we conclude that due process requires some type of hearing at which the
+City should be required to establish that property owners did not abate the violation
+within the one-year period. Evidence in the record establishes that there may be
+significant disputes between property owners and inspectors concerning whether a
+violation has been satisfactorily abated. Inasmuch as the determination whether
+compliance has been achieved is made solely by City officials, the procedures established
+by section 90-21 do not provide a sufficient opportunity for the property owner to
+challenge that determination (see Matter of Hecht v Monaghan, 307 NY 461,
+469-470 [1954]; see also Jones, 320 F Supp 2d at 1127-1129). Moreover, the
+City official reviewing the written protest is the same official who assessed the CMF in
+the first instance. Contrary to the contention of respondents, the availability of a CPLR
+article 78 proceeding does not establish that the statute provides sufficient procedural due
+process because such proceedings "presuppose administrative procedures that conform
+with due process requirements" (People v David W., 95 NY2d 130, 140 [2000];
+cf. Matter of County of Broome
+[Ritter], 86 AD3d 817, 819 [2011], lv denied 17 NY3d 716 [2011]).
+
+Finally, we reject respondents' contention that additional procedural safeguards, such
+as a hearing, would be too costly and unduly burdensome. Indeed, we note that such
+hearings are provided in the red-light traffic cases where the penalty is $50 (see Krieger v City of
+Rochester, 42 Misc 3d 753, 770-771 [2013]; see generally Vehicle and
+Traffic Law § 1111-b et seq.).
+
+In view of our determination, we do not address the appealing petitioners' remaining
+contentions or the contention raised in the amicus brief. Present—Scudder, P.J.,
+Fahey, Peradotto, Carni and Whalen, JJ.
+
+
+

@@ -21,12 +21,8 @@ public class NYAppealParseTest {
     private static final Logger logger = LoggerFactory.getLogger(NYAppealParseTest.class);
 
     @Test
-    public void testConnect() throws IOException {
-        NYAppealParse instance = new NYAppealParse();
-        System.out.println(instance.toString());
-    }
-    @Test
     public void testRegex() throws IOException {
+        System.out.println("testRegex");
         NYAppealParse instance = new NYAppealParse();
         File[] files = new File("test-data/ny_appeals").listFiles();
         Arrays.sort(files);
@@ -41,6 +37,5 @@ public class NYAppealParseTest {
                 }
             }
         }
-        System.out.println(instance.toString());
     }
 }

@@ -27,9 +27,8 @@ public class NYAppealParseTest {
         File[] files = new File("test-data/ny_appeals").listFiles();
         Arrays.sort(files);
         for (File file: files) {
-            System.out.println("File: " + file.getName());
             String text= FileUtils.readFileToString(file);
-            Map<String, String> answer = instance.extractInfo(text);
+            Map<String, String> answer = instance.extractInfo(file);
             for (int e = 0; e < NYAppealParse.extracts.length; ++e) {
                 String key = NYAppealParse.extracts[e][0];
                 if (answer.containsKey(key)) {

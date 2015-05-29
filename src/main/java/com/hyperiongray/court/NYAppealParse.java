@@ -25,6 +25,7 @@ public class NYAppealParse {
     private enum KEYS {File, Casenumber, DocumentLength, Court, County, Judge, Keywords, FirstDate, AppealDate, Gap_days,
         ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent, DistrictAttorney,
         HarmlessError, NotHarmlessError };
+    private final static int MAX_FIELD_LENGTH = 75; // more than that is probably a bug, so don't make it a parameter
 
     public static String extracts[][] = {
             {KEYS.File.toString(), ""},
@@ -51,6 +52,7 @@ public class NYAppealParse {
     private String inputDir;
     private String outputFile;
     private int breakSize = 10000;
+    private int fileNumber = 0;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
 
@@ -80,6 +82,7 @@ public class NYAppealParse {
                 if (key.equals(KEYS.Judges.toString())) value = value.substring("Judges-".length() + 1);
                 if (key.equals(KEYS.Judge.toString())) value = value.substring("Judge ".length() + 1, value.length() - 1);
                 if (key.equals(KEYS.FirstDate.toString())) value = value.substring("rendered ".length(), value.length() - 1);
+                value = sanitize(value);
                 info.put(key, value);
             }
         }
@@ -112,7 +115,9 @@ public class NYAppealParse {
                 if (comma > 0 && (comma - crimeStart < 5)) crimeStart += (comma - crimeStart + 1);
                 int crimeEnd = text.indexOf(".", crimeStart);
                 if (crimeEnd > 0) {
-                    info.put(KEYS.Crimes.toString(), text.substring(crimeStart, crimeEnd));
+                    String value = text.substring(crimeStart, crimeEnd);
+                    value = sanitize(value);
+                    info.put(KEYS.Crimes.toString(), value);
                 }
             }
         }
@@ -126,6 +131,7 @@ public class NYAppealParse {
                     int startLine = text.lastIndexOf("\n", endLine - 1);
                     if (startLine > 0) {
                         value = text.substring(startLine + 1, endLine);
+                        value = sanitize(value);
                         info.put(KEYS.DefendantAppellant.toString(), value);
                     }
                 }
@@ -141,6 +147,7 @@ public class NYAppealParse {
                     int startLine = text.lastIndexOf("\n", endLine - 1);
                     if (startLine > 0) {
                         value = text.substring(startLine + 1, endLine);
+                        value = sanitize(value);
                         info.put(KEYS.DefendantRespondent.toString(), value);
                     }
                 }
@@ -175,20 +182,13 @@ public class NYAppealParse {
     }
 
     private void parseDocuments() throws IOException {
+        cleanupFirst();
         int lineCount = 0;
-        int fileNumber = 0;
-        StringBuffer buf = new StringBuffer();
-        for (int e = 0; e < extracts.length; ++e) {
-            String key = extracts[e][0];
-            buf.append(key).append("|");
-        }
-        buf.deleteCharAt(buf.length() - 1);
-        buf.append("\n");
-        FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), false);
+        writeHeader();
         File[] files = new File(inputDir).listFiles();
         Arrays.sort(files);
         for (File file : files) {
-            buf = new StringBuffer();
+            StringBuffer buf = new StringBuffer();
             Map<String, String> answer = extractInfo(file);
             for (int e = 0; e < extracts.length; ++e) {
                 String key = extracts[e][0];
@@ -205,6 +205,7 @@ public class NYAppealParse {
             if (lineCount >= breakSize) {
                 ++fileNumber;
                 lineCount = 1;
+                writeHeader();
             }
             buf = new StringBuffer();
             for (int e = 0; e < extracts.length; ++e) {
@@ -224,7 +225,28 @@ public class NYAppealParse {
         }
         return true;
     }
-
+    private String sanitize(String value) {
+        if (value.length() > MAX_FIELD_LENGTH) value = value.substring(0, MAX_FIELD_LENGTH - 1);
+        value = value.replaceAll("\\r\\n|\\r|\\n", " ");
+        return value;
+    }
+    private void cleanupFirst() {
+        File[] files = new File(outputFile).getParentFile().listFiles();
+        for (File file: files) {
+            if (file.getName().endsWith("csv")) file.delete();
+        }
+    }
+    private void writeHeader() throws IOException {
+        StringBuffer buf = new StringBuffer();
+        for (int e = 0; e < extracts.length; ++e) {
+            String key = extracts[e][0];
+            buf.append(key).append("|");
+        }
+        buf.deleteCharAt(buf.length() - 1);
+        buf.append("\n");
+        // create new file, append = false
+        FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), false);
+    }
 }
 
 

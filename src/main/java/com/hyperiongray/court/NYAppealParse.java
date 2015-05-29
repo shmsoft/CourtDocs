@@ -26,6 +26,7 @@ public class NYAppealParse {
         ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent, DistrictAttorney,
         HarmlessError, NotHarmlessError };
     private final static int MAX_FIELD_LENGTH = 75; // more than that is probably a bug, so don't make it a parameter
+    private Stats stats = new Stats();
 
     public static String extracts[][] = {
             {KEYS.File.toString(), ""},
@@ -172,6 +173,7 @@ public class NYAppealParse {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.print(instance.stats.toString());
     }
 
     private static void formOptions() {
@@ -187,9 +189,15 @@ public class NYAppealParse {
         writeHeader();
         File[] files = new File(inputDir).listFiles();
         Arrays.sort(files);
+        stats.filesInDir = files.length;
         for (File file : files) {
+            ++stats.docs;
             StringBuffer buf = new StringBuffer();
             Map<String, String> answer = extractInfo(file);
+            if (!verifyInfo(answer)) {
+                logger.warn("File {} did not verify", file.getName());
+                continue;
+            }
             for (int e = 0; e < extracts.length; ++e) {
                 String key = extracts[e][0];
                 String value = "";
@@ -201,6 +209,7 @@ public class NYAppealParse {
             buf.deleteCharAt(buf.length() - 1);
             buf.append("\n");
             FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), true);
+            ++stats.metadata;
             ++lineCount;
             if (lineCount >= breakSize) {
                 ++fileNumber;
@@ -246,6 +255,15 @@ public class NYAppealParse {
         buf.append("\n");
         // create new file, append = false
         FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), false);
+    }
+    private boolean verifyInfo(Map<String, String> answer) {
+        String caseNumber = answer.get(KEYS.Casenumber.toString());
+        if (caseNumber == null || caseNumber.length() < 3 || caseNumber.length() > 15 || !caseNumber.contains("AD")) {
+            logger.info("Case number {} invalid", caseNumber);
+            ++stats.caseProblem;
+            return false;
+        }
+        return true;
     }
 }
 

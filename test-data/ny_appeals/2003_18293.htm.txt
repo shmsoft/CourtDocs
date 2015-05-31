@@ -1,0 +1,55 @@
+
+	County of Nassau v State of New York
+	2003 NY Slip Op 18293 [1 AD3d 732]
+	November 13, 2003
+	Appellate Division, Third Department
+	Published by New York State Law Reporting Bureau pursuant to Judiciary Law § 431.
+	
+
+As corrected through Wednesday, January 28, 2004
+
+
+
+
+
+
+
+
+	County of Nassau, Appellant,
+v
+State of New York, Respondent. (Claim No. 94503.)
+
+
+
+—
+
+
+ Mercure, J. Appeal from an order of the Court of Claims (Bell, J.), entered February 21, 2002, which, inter alia, granted defendant's motion for summary judgment dismissing the claim.
+
+Claimant seeks indemnification from defendant for real property tax refunds to certain utility companies. A more detailed recitation of the underlying facts may be found in this Court's prior decision, Matter of New York Tel. Co. v Nassau County (267 AD2d 629 [1999], lv denied 95 NY2d 756 [2000]), in which we held that claimant—a "special assessing unit" with the responsibility of assessing the values of "special franchise" properties (see RPTL 616 [4]), such as the utilities' property—miscalculated the tax liability of the utility companies for the 1995-1996 tax year. We concluded that despite notice from the State Office of Real Property Services (hereinafter ORPS) regarding the proper data to use in the calculation, claimant failed to use that data in determining the "adjusted base proportion" (hereinafter ABP) of the properties at issue (Matter of New York Tel. Co. v Nassau County, supra at 631-632). Rather, claimant used inappropriate data when it adjusted the utilities' tax share to reflect changes to the property on the assessment roll (see RPTL 1803-a [5]). As a result of this error, the tax share attributable to the utility companies increased significantly and excessive taxes were levied on them (see Matter of New York Tel. Co. v Nassau County, supra at 632).
+
+In support of its request for indemnification, claimant asserted before the Court of Claims that ORPS improperly certified the ABPs used by claimant to compute the utilities' tax bill when the information was forwarded to ORPS for review and certification pursuant to RPTL former 1803-a (7). That provision required, in pertinent part, that ORPS "review [the ABP] for accuracy of its determination and compliance with the provisions of this section."[FN*]
+
+Claimant argued that pursuant to section 1803-a (7), ORPS was required to check not only that the calculations were performed in accordance with the mathematical formula set forth in the statute—as it did—but also that the correct data were used in making the calculations.
+
+In November 2001, defendant moved, among other things, for summary judgment dismissing the claim. Claimant cross-moved for summary judgment. The Court of Claims granted defendant's motion and dismissed the claim. Claimant appeals and we now affirm.
+
+It is well settled that defendant cannot be held liable for its negligence in the performance of discretionary, as opposed to ministerial, acts (see Lauer v City of New York, 95 NY2d 95, 99 [2000]; Tango v Tulevech, 61 NY2d 34, 40-42 [1983]). Thus, the issue before us distills to whether RPTL former 1803-a (7) left to ORPS' discretion the scope of review of the ABPs or whether the review and certification process was ministerial in nature. The principal distinction between ministerial and discretionary acts "is that discretionary or quasi-judicial acts involve the exercise of reasoned judgment . . . whereas a ministerial act envisions direct adherence to a governing rule or standard with a compulsory result" (Tango v Tulevech, supra at 41; see Davis v State of New York, 257 AD2d 112, 115 [1999]).
+
+Here, RPTL former 1803-a (7) did not mandate any particular review procedure, define the scope of review or require the review to include an examination of all the myriad data that factored into claimant's calculation of the ABPs. Thus, in our view, the statute left to ORPS's discretion the extent of the review. Further, we agree with ORPS's assertion that its determination to limit its review to checking only a part of the calculations for accuracy and correct use of the statutory formula was reasonable given that ORPS had only a 30-day time frame to review hundreds of thousands of calculations (see RPTL former 1803-a [7]). In any event, even assuming that the review process was ministerial in nature and that ORPS erred in failing to check all of the underlying data submitted for accuracy, claimant has not demonstrated that it incurred damages in refunding taxes collected from the utilities as a result of a misallocation of the tax burden among Nassau County taxpayers. Rather than seeking reimbursement from all the taxpayers in the state, including those who received no benefit from the utilities' overpayment, the equities dictate that claimant must now seek reimbursement from those Nassau County taxpayers who paid less than their fair share of the local tax burden as a result of the misallocation.
+
+In sum, ORPS's acts in reviewing and certifying the ABPs were quasi-judicial and discretionary. Accordingly, defendant cannot be held liable in negligence. Moreover, claimant cannot obtain indemnification from defendant for a refund of taxes collected from the utilities in error.
+
+Cardona, P.J., Carpinello, Rose and Kane, JJ., concur. Ordered that the order is affirmed, without costs.
+
+
+Footnotes
+
+
+
+
+Footnote *: RPTL former 1803-a (7) was repealed in 1997 (see L 1997, ch 355, § 12; see also Senate Mem in Support, 1997 McKinney's Session Laws of NY, at 2341-2342). The statute no longer requires ORPS to certify the ABPs as accurate (see RPTL 1803-a).
+
+
+
+

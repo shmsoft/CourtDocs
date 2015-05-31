@@ -5,10 +5,13 @@ package com.hyperiongray.court;
  */
 public class Stats {
     public int docs;
-    public int noParse;
     public int caseProblem;
     public int filesInDir;
     public int metadata;
+    public int judgeProblem;
+    public int courtProblem;
+    public int districtAttorneyProblem;
+    public int gapDays;
 
     public String toString() {
         return
@@ -16,6 +19,10 @@ public class Stats {
                         "Files in dir: " + filesInDir + "\n" +
                         "Docs processed: " + docs + "\n" +
                         "Metadata lines written: " + metadata + "\n" +
-                        "Case parsing problems: " + caseProblem;
+                        "Case parsing problems: " + caseProblem + "\n" +
+                        "Court parsing problems: " + courtProblem + "\n" +
+                        "Gap days: " + gapDays + "\n" +
+                        "Judge parsing problems: " + judgeProblem + "\n" +
+                        "District attorney parsing problems: " + districtAttorneyProblem;
     }
 }

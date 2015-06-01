@@ -30,7 +30,7 @@ public class NYAppealParse {
         HarmlessError, NotHarmlessError
     }
 
-    private final static int MAX_FIELD_LENGTH = 75; // more than that is probably a bug, so don't make it a parameter
+    private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
     private Stats stats = new Stats();
 
     private String inputDir;
@@ -148,11 +148,13 @@ public class NYAppealParse {
                     continue;
 
                 case Judges:
+                    value = "";
                     regex = "Present.+";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = m.group();
-                        info.put(key.toString(), sanitize(value).substring("Judges-".length() + 1));
+                        if (value.contains("Judges-")) value = value.substring("Judges-".length() + 1);
+                        info.put(key.toString(), sanitize(value));
                     }
                     continue;
 
@@ -183,6 +185,7 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = m.group().substring(2);
+                        value = value.substring(0,  value.length() - "District Attorney".length());
                         value = sanitize(value);
                         info.put(key.toString(), value);
                     }
@@ -321,37 +324,41 @@ public class NYAppealParse {
         Arrays.sort(files);
         stats.filesInDir = files.length;
         for (File file : files) {
-            // right now, we analyze only "txt", and consider the rest as garbage
-            if (!file.getName().endsWith("txt")) continue;
-            ++stats.docs;
-            StringBuffer buf = new StringBuffer();
-            Map<String, String> answer = extractInfo(file);
-            if (!verifyInfo(answer)) {
-                logger.warn("File {} did not verify", file.getName());
-                continue;
-            }
-            for (int e = 0; e < KEYS.values().length; ++e) {
-                String key = KEYS.values()[e].toString();
-                String value = "";
-                if (answer.containsKey(key)) {
-                    value = answer.get(key);
+            try {
+                // right now, we analyze only "txt", and consider the rest as garbage
+                if (!file.getName().endsWith("txt")) continue;
+                ++stats.docs;
+                StringBuffer buf = new StringBuffer();
+                Map<String, String> answer = extractInfo(file);
+                if (!verifyInfo(answer)) {
+                    logger.warn("File {} did not verify", file.getName());
+                    continue;
                 }
-                buf.append(value).append(separator);
-            }
-            buf.deleteCharAt(buf.length() - 1);
-            buf.append("\n");
-            FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), true);
-            ++stats.metadata;
-            ++lineCount;
-            if (lineCount >= breakSize) {
-                ++fileNumber;
-                lineCount = 1;
-                writeHeader();
-            }
-            buf = new StringBuffer();
-            for (int e = 0; e < KEYS.values().length; ++e) {
-                String key = KEYS.values()[e].toString();
-                buf.append(key).append(separator);
+                for (int e = 0; e < KEYS.values().length; ++e) {
+                    String key = KEYS.values()[e].toString();
+                    String value = "";
+                    if (answer.containsKey(key)) {
+                        value = answer.get(key);
+                    }
+                    buf.append(value).append(separator);
+                }
+                buf.deleteCharAt(buf.length() - 1);
+                buf.append("\n");
+                FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), true);
+                ++stats.metadata;
+                ++lineCount;
+                if (lineCount >= breakSize) {
+                    ++fileNumber;
+                    lineCount = 1;
+                    writeHeader();
+                }
+                buf = new StringBuffer();
+                for (int e = 0; e < KEYS.values().length; ++e) {
+                    String key = KEYS.values()[e].toString();
+                    buf.append(key).append(separator);
+                }
+            } catch (IOException e) {
+                logger.error("Error processing file {} " + file.getName());
             }
         }
     }
@@ -375,6 +382,7 @@ public class NYAppealParse {
         // take out new lines
         value = value.replaceAll("\\r\\n|\\r|\\n", " ");
         value = value.trim();
+        if (value.endsWith(",")) value = value.substring(0, value.length() - 1);
         return value;
     }
 

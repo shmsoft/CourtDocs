@@ -25,9 +25,9 @@ public class NYAppealParse {
     private static Options options;
 
     public enum KEYS {
-        File, Casenumber, DocumentLength, Court, County, Judge, DistrictAttorney, Keywords, FirstDate, AppealDate,
+        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, Keywords, FirstDate, AppealDate,
         Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
-        HarmlessError, NotHarmlessError
+        HarmlessError, NotHarmlessError, DocumentLength
     }
 
     private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
@@ -49,12 +49,19 @@ public class NYAppealParse {
         Map<String, String> info = new HashMap<>();
         // there are so many exceptions that 'case' is preferable to a generic loops with exceptions
         Matcher m;
+        String regex = "";
+        String value = "";
+        boolean criminal;
+        regex = "People v ";
+        m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+        criminal = m.find();
+
         for (int e = 0; e < KEYS.values().length; ++e) {
             KEYS key = KEYS.values()[e];
-            String regex = "";
-            String value = "";
-            // default value, but all must be present
-            info.put(key.toString(), "");
+            value = "";
+
+            info.put(key.toString(), value);
+
             switch (key) {
                 case File:
                     info.put(KEYS.File.toString(), file.getName());
@@ -64,9 +71,11 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         info.put(key.toString(), sanitize(m.group()));
-                    } else {
-
                     }
+                    continue;
+
+                case CivilKriminal:
+                    info.put(KEYS.CivilKriminal.toString(), criminal ? "K" : "C");
                     continue;
 
                 case DocumentLength:
@@ -144,7 +153,7 @@ public class NYAppealParse {
                     continue;
 
                 case Crimes:
-                    // TODO
+                    // done later together with mode of conviction
                     continue;
 
                 case Judges:
@@ -180,6 +189,7 @@ public class NYAppealParse {
                     continue;
 
                 case DistrictAttorney:
+                    if (!criminal) continue;
                     regex = "\\n[a-zA-Z,.\\s]+District Attorney";
                     value = "";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
@@ -239,7 +249,7 @@ public class NYAppealParse {
             }
         }
         if (!gapParsed) ++stats.gapDays;
-        if (info.containsKey(KEYS.ModeOfConviction.toString())) {
+        if (criminal && info.containsKey(KEYS.ModeOfConviction.toString())) {
             String mode = info.get(KEYS.ModeOfConviction.toString());
             // crime is from here till the end of the line
             int crimeStart = text.indexOf(mode);
@@ -249,7 +259,7 @@ public class NYAppealParse {
                 if (comma > 0 && (comma - crimeStart < 5)) crimeStart += (comma - crimeStart + 1);
                 int crimeEnd = text.indexOf(".", crimeStart);
                 if (crimeEnd > 0) {
-                    String value = text.substring(crimeStart, crimeEnd);
+                    value = text.substring(crimeStart, crimeEnd);
                     value = sanitize(value);
                     info.put(KEYS.Crimes.toString(), value);
                 }
@@ -257,7 +267,7 @@ public class NYAppealParse {
         }
         if (info.containsKey(KEYS.DefendantAppellant.toString())) {
             // the answer is in the previous line
-            String value = info.get(KEYS.DefendantAppellant.toString());
+            value = info.get(KEYS.DefendantAppellant.toString());
             int valueInd = text.indexOf(value);
             if (valueInd > 0) {
                 int endLine = text.lastIndexOf("\n", valueInd);
@@ -273,7 +283,7 @@ public class NYAppealParse {
         }
         if (info.containsKey(KEYS.DefendantRespondent.toString())) {
             // the answer is in the previous line
-            String value = info.get(KEYS.DefendantRespondent.toString());
+            value = info.get(KEYS.DefendantRespondent.toString());
             int valueInd = text.indexOf(value);
             if (valueInd > 0) {
                 int endLine = text.lastIndexOf("\n", valueInd);

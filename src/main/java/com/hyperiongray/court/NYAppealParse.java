@@ -145,6 +145,7 @@ public class NYAppealParse {
                     continue;
 
                 case ModeOfConviction:
+                    if (!criminal) continue;
                     regex = "plea\\s*of\\s*guilty|jury\\s*verdict|nonjury\\s*trial";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
@@ -159,10 +160,13 @@ public class NYAppealParse {
                 case Judges:
                     value = "";
                     regex = "Present.+";
-                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                    m = Pattern.compile(regex).matcher(text);
                     if (m.find()) {
                         value = m.group();
-                        if (value.contains("Judges-")) value = value.substring("Judges-".length() + 1);
+                        value = value.substring("Present".length() + 1);
+                        if (value.contains("Judges-")) {
+                            value = value.substring("Judges-".length() + 1);
+                        }
                         info.put(key.toString(), sanitize(value));
                     }
                     continue;

@@ -10,10 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +24,7 @@ public class NYAppealParse {
     public enum KEYS {
         File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, Keywords, FirstDate, AppealDate,
         Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
-        HarmlessError, NotHarmlessError, DocumentLength
+        HarmlessError, NotHarmlessError, DocumentLength, SexOffender
     }
 
     private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
@@ -40,6 +37,17 @@ public class NYAppealParse {
     private char separator = '|';
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
+    String [] keywords = {"unanimouslys*affirmed|affirmed",
+            "unanimouslys*modified|modified",
+            "unanimouslys*reversed|reversed",
+            "unanimouslys*dismissed|dismissed",
+            "cases*iss*held",
+            "decisions*iss*reserved",
+            "matters*iss*remitted"}
+            ;
+
+    boolean sexOffender = false;
+    String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
 
     public Map<String, String> extractInfo(File file) throws IOException {
         String text = FileUtils.readFileToString(file);
@@ -51,10 +59,16 @@ public class NYAppealParse {
         Matcher m;
         String regex = "";
         String value = "";
+        // civil vs criminal
         boolean criminal;
         regex = "People v ";
         m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
         criminal = m.find();
+        // sex offender
+        regex = "sex\\s*offender\\s*registration\\s*act";
+        m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+        sexOffender = m.find();
+        if (sexOffender) criminal = true;
 
         for (int e = 0; e < KEYS.values().length; ++e) {
             KEYS key = KEYS.values()[e];
@@ -67,15 +81,40 @@ public class NYAppealParse {
                     info.put(KEYS.File.toString(), file.getName());
                     continue;
                 case Casenumber:
-                    regex = "\\[.+\\]";
+                    value = "";
+                    regex = "\\[[0-9]+\\sAD.+\\]";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        value = sanitize(m.group());
+                        if (value.length() >= 3 && value.length() < 15 && value.contains("AD")) {
+                            info.put(key.toString(), value);
+                        }
                     }
+                    if (value.isEmpty()) {
+                        regex = "[0-9]{4}.+NY.*Slip.*Op.*[0-9]+";
+                        m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                        if (m.find()) {
+                            value = sanitize(m.group());
+                            info.put(key.toString(), value);
+                        }
+                    }
+                    if (!value.isEmpty()) ++stats.caseNumber;
                     continue;
 
                 case CivilKriminal:
                     info.put(KEYS.CivilKriminal.toString(), criminal ? "K" : "C");
+                    if (criminal) {
+                        ++stats.criminal;
+                    } else {
+                        ++stats.civil;
+                    }
+                    continue;
+
+                case SexOffender:
+                    info.put(KEYS.SexOffender.toString(), sexOffender? "Y" : "");
+                    if (sexOffender) {
+                        ++stats.sexOffence;
+                    }
                     continue;
 
                 case DocumentLength:
@@ -105,19 +144,12 @@ public class NYAppealParse {
                         value = m.group();
                         value = betweenTheLions(value, '(', ')');
                         info.put(key.toString(), sanitize(value));
+                        ++stats.judge;
                     }
-                    if (value.isEmpty()) {
-                        ++stats.judgeProblem;
-                    }
-
                     continue;
 
                 case Keywords:
-                    regex = ""; // TODO - what's there?
-                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
-                    if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
-                    }
+                        info.put(key.toString(), findAll(text, keywords));
                     continue;
 
                 case FirstDate:
@@ -159,15 +191,23 @@ public class NYAppealParse {
 
                 case Judges:
                     value = "";
-                    regex = "Present.+";
+                    regex = "Present—\\s*";
                     m = Pattern.compile(regex).matcher(text);
                     if (m.find()) {
                         value = m.group();
-                        value = value.substring("Present".length() + 1);
-                        if (value.contains("Judges-")) {
-                            value = value.substring("Judges-".length() + 1);
-                        }
+                        value = value.substring("Present—".length());
                         info.put(key.toString(), sanitize(value));
+                        ++stats.judges;
+                    }
+                    if (value.isEmpty()) {
+                        regex = "Present:\\s*";
+                        m = Pattern.compile(regex).matcher(text);
+                        if (m.find()) {
+                            value = m.group();
+                            value = value.substring("Present—".length());
+                            info.put(key.toString(), sanitize(value));
+                            ++stats.judges;
+                        }
                     }
                     continue;
 
@@ -256,6 +296,7 @@ public class NYAppealParse {
         if (criminal && info.containsKey(KEYS.ModeOfConviction.toString())) {
             String mode = info.get(KEYS.ModeOfConviction.toString());
             // crime is from here till the end of the line
+            value = "";
             int crimeStart = text.indexOf(mode);
             if (crimeStart > 0) {
                 crimeStart += mode.length();
@@ -266,7 +307,13 @@ public class NYAppealParse {
                     value = text.substring(crimeStart, crimeEnd);
                     value = sanitize(value);
                     info.put(KEYS.Crimes.toString(), value);
+                    ++stats.crimes;
                 }
+            }
+            if (value.isEmpty() && sexOffender) {
+                value = "risk pursuant to Sex Offender Registration Act";
+                info.put(KEYS.Crimes.toString(), value);
+                ++stats.crimes;
             }
         }
         if (info.containsKey(KEYS.DefendantAppellant.toString())) {
@@ -344,10 +391,6 @@ public class NYAppealParse {
                 ++stats.docs;
                 StringBuffer buf = new StringBuffer();
                 Map<String, String> answer = extractInfo(file);
-                if (!verifyInfo(answer)) {
-                    logger.warn("File {} did not verify", file.getName());
-                    continue;
-                }
                 for (int e = 0; e < KEYS.values().length; ++e) {
                     String key = KEYS.values()[e].toString();
                     String value = "";
@@ -419,16 +462,6 @@ public class NYAppealParse {
         FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), false);
     }
 
-    private boolean verifyInfo(Map<String, String> answer) {
-        String caseNumber = answer.get(KEYS.Casenumber.toString());
-        if (caseNumber == null || caseNumber.length() < 3 || caseNumber.length() > 15 || !caseNumber.contains("AD")) {
-            logger.info("Case number {} invalid", caseNumber);
-            ++stats.caseProblem;
-            return false;
-        }
-        return true;
-    }
-
     private String betweenTheLions(String text, char lion1, char lion2) {
         String regex = "\\" + lion1 + ".+" + "\\" + lion2;
         Matcher m = Pattern.compile(regex).matcher(text);
@@ -438,6 +471,16 @@ public class NYAppealParse {
         } else {
             return text;
         }
+    }
+
+    private String findAll(String text, String [] expr) {
+        StringBuilder results = new StringBuilder();
+        for (String regex: expr) {
+            Matcher m = Pattern.compile(regex).matcher(text);
+            if (m.find()) results.append(sanitize(m.group())).append(";");
+        }
+        if (results.length() > 0) results.deleteCharAt(results.length() - 1);
+        return results.toString();
     }
 }
 

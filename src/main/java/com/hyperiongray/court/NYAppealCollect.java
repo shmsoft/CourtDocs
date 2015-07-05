@@ -1,10 +1,7 @@
 package com.hyperiongray.court;
 
 import com.google.common.io.Files;
-import com.hyperiongray.pull.CalCorrectRehabGetPull;
 import com.hyperiongray.pull.GetPull;
-import com.hyperiongray.pull.NYAppealGetPull;
-import com.hyperiongray.pull.Pull;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
@@ -17,14 +14,10 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class NYAppealCollect {
 

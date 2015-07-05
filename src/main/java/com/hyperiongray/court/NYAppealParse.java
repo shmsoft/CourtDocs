@@ -64,6 +64,12 @@ public class NYAppealParse {
         regex = "People v ";
         m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
         criminal = m.find();
+        if (criminal) {
+            // this should occur almost in the beginning of the file
+            if (text.indexOf("People v ") > 100) {
+                criminal = false;
+            }
+        }
         // sex offender
         regex = "sex\\s*offender\\s*registration\\s*act";
         m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
@@ -122,17 +128,35 @@ public class NYAppealParse {
                     continue;
                 case Court:
                     value = "";
-                    if (text.contains("Supreme Court")) value = "Supreme Court";
-                    if (text.contains("County Court")) value = "County Court";
-                    if (text.contains("Court of Claims")) value = "Court of Claims";
-                    info.put(key.toString(), value);
-                    if (value.isEmpty()) ++stats.courtProblem;
+                    regex = "(Supreme Court)|(County Court)|(Court of Claims)|(Family Court)|" +
+                            "(Workers' Compensation Board)|(Division of Human Rights)|" +
+                            "(Unemployment Insurance Appeal Board)|(Department of Motor Vehicles)";
+                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                    if (m.find()) {
+                        value = m.group();
+                        info.put(key.toString(), sanitize(value));
+                    }
+                    if (value.isEmpty()) {
+                        regex = "\\s+[a-zA-Z]+\\s+Committee\\s+[a-zA-Z\\s]+";
+                        m = Pattern.compile(regex).matcher(textFlow);
+                        if (m.find()) {
+                            value = m.group();
+                            value = value.substring(1);
+                            info.put(key.toString(), sanitize(value));
+                        }
+                        info.put(key.toString(), value);
+                    }
+                    if (!value.isEmpty()) ++stats.court;
+                    if (value.isEmpty()) logger.debug("Court problem in file {} ", file.getName());
                     continue;
                 case County:
+                    value = "";
                     regex = "[a-zA-Z]+\\sCounty";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        value = sanitize(m.group());
+                        info.put(key.toString(), value);
+                        ++stats.county;
                     }
                     continue;
 
@@ -149,27 +173,38 @@ public class NYAppealParse {
                     continue;
 
                 case Keywords:
-                        info.put(key.toString(), findAll(text, keywords));
+                    value = findAll(text, keywords);
+                    info.put(key.toString(), value);
+                    if (!value.isEmpty()) ++stats.keywords;
                     continue;
 
                 case FirstDate:
+                    value = "";
                     regex = "(rendered|entered|dated) " + months + " [0-9]+?, 2[0-1][0-9][0-9]";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = m.group();
-                        value = value.replaceAll("rendered ", "");
-                        value = value.replaceAll("entered ", "");
-                        value = value.replaceAll("dated ", "");
-                        info.put(key.toString(), sanitize(value));
+                        value = value.replaceAll("[Rr]endered ", "");
+                        value = value.replaceAll("[Ee]ntered ", "");
+                        value = value.replaceAll("[Dd]ated ", "");
+                        value = sanitize(value);
+                        info.put(key.toString(), value);
+                    }
+                    if (!value.isEmpty()) ++stats.firstDate;
+                    if (value.isEmpty()) {
+                        logger.warn("First date parsing error in {}", file.getName());
                     }
                     continue;
 
                 case AppealDate:
-                    regex = months + ".+";
+                    value = "";
+                    regex = months + "\\s[0-9]+,\\s[0-9]+";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        value = sanitize(m.group());
+                        info.put(key.toString(),value);
                     }
+                    if (!value.isEmpty()) ++stats.appealDate;
                     continue;
 
                 case Gap_days:
@@ -178,10 +213,16 @@ public class NYAppealParse {
 
                 case ModeOfConviction:
                     if (!criminal) continue;
+                    value = "";
                     regex = "plea\\s*of\\s*guilty|jury\\s*verdict|nonjury\\s*trial";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        value = sanitize(m.group());
+                        info.put(key.toString(), value);
+                    }
+                    if (!value.isEmpty()) ++stats.modeOfConviction;
+                    if (value.isEmpty()) {
+                        logger.warn("Problem with mode of conviction in {}", file.getName());
                     }
                     continue;
 
@@ -191,23 +232,29 @@ public class NYAppealParse {
 
                 case Judges:
                     value = "";
-                    regex = "Present—\\s*";
-                    m = Pattern.compile(regex).matcher(text);
+                    // includes a special dash
+                    regex = "Present[–—:].+";
+                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(textFlow);
                     if (m.find()) {
                         value = m.group();
-                        value = value.substring("Present—".length());
+                        value = value.substring("Present".length() + 1);
                         info.put(key.toString(), sanitize(value));
                         ++stats.judges;
                     }
                     if (value.isEmpty()) {
-                        regex = "Present:\\s*";
-                        m = Pattern.compile(regex).matcher(text);
+                        regex = "\\.\\s[A-Z].+concur\\.";
+                        m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                         if (m.find()) {
+                            // hack, could not do it with regex
                             value = m.group();
-                            value = value.substring("Present—".length());
-                            info.put(key.toString(), sanitize(value));
-                            ++stats.judges;
+                            int index = value.lastIndexOf(". ");
+                            if (index > 0) {
+                                value = sanitize(value.substring(index + 2));
+                                value = value.substring(0, value.length() - "concur.".length());
+                            }
                         }
+                        info.put(key.toString(), value);
+                        ++stats.judges;
                     }
                     continue;
 
@@ -273,14 +320,14 @@ public class NYAppealParse {
                 try {
                     firstDate = dateFormat.parse(firstDateStr);
                 } catch (NumberFormatException | ParseException e) {
-                    logger.error("Date parsing error for {}", firstDateStr);
+                    logger.error("Date parsing error for {} in {}", firstDateStr, file.getName());
                 }
             }
             if (!appealDateStr.isEmpty()) {
                 try {
                     appealDate = dateFormat.parse(appealDateStr);
                 } catch (NumberFormatException | ParseException e) {
-                    logger.error("Date parsing error for {}", appealDateStr);
+                    logger.error("Date parsing error for {} in {}", appealDateStr, file.getName());
                 }
             }
             if (firstDate != null && appealDate != null) {
@@ -292,7 +339,7 @@ public class NYAppealParse {
                 }
             }
         }
-        if (!gapParsed) ++stats.gapDays;
+        if (gapParsed) ++stats.gapDays;
         if (criminal && info.containsKey(KEYS.ModeOfConviction.toString())) {
             String mode = info.get(KEYS.ModeOfConviction.toString());
             // crime is from here till the end of the line

@@ -1,0 +1,41 @@
+
+	Matter of State Farm Mut. Auto. Ins. Co. v Russell
+	2003 NY Slip Op 18057 [1 AD3d 371]
+	November 3, 2003
+	Appellate Division, Second Department
+	Published by New York State Law Reporting Bureau pursuant to Judiciary Law § 431.
+	
+
+As corrected through Wednesday, January 28, 2004
+
+
+
+
+
+
+
+
+	In the Matter of State Farm Mutual Automobile Insurance Company, Appellant,
+v
+Keon Russell, Respondent.
+
+
+
+—
+
+
+ In a proceeding pursuant to CPLR article 75 to permanently stay arbitration of an uninsured motorist claim, the petitioner appeals from an order of the Supreme Court, Queens County (Thomas, J.), dated October 16, 2002, which denied the petition and dismissed the proceeding.
+
+Ordered that the order is reversed, on the law, with costs, the petition is reinstated, and the matter is remitted to the Supreme Court, Queens County, for further proceedings in accordance herewith.
+
+On May 21, 2000, the respondent Keon Russell (hereinafter Keon) was involved in an accident with another vehicle while driving an automobile owned by a nonparty, Phillipia A. Authurs. The other vehicle was stolen and uninsured. Additionally, the uninsured motorist coverage on the automobile owned by Authurs was exhausted by payments to two of the passengers.
+
+Thereafter, Keon served a demand for arbitration claiming that he was entitled to uninsured motorist benefits under a policy issued to a nonparty, Esmie Robinson, by the petitioner, State Farm Mutual Automobile Insurance Company (hereinafter State Farm). State Farm responded by commencing this proceeding to permanently stay the arbitration pursuant to CPLR article 75. In support of it is petition, it submitted, inter alia, the affidavit of one of its claims examiners. The claims examiner alleged, without stating any factual basis therefor, that Keon had no insurance coverage under any State Farm policy.
+
+In response, Keon submitted an answer as well as affidavits from himself, his father Donovan Russell (hereinafter Donovan), and Robinson, together with a copy of a paper captioned "Auto Renewal" which had apparently been sent by State Farm to Robinson. He contended that this evidence demonstrated that he was a family member residing with a named insured under the policy, namely Donovan. Keon did not allege that he lived with Robinson. The Supreme Court denied the petition and dismissed the proceeding on the papers presented. This was error.
+
+While the proof submitted by State Farm was insufficient to warrant judgment in its favor granting the stay, the proof submitted by Keon also failed to establish that Donovan was a named insured and thus that Keon, as a relative living with a named insured, was entitled to uninsured motorist coverage under the policy State Farm issued to Robinson. The affidavits by Robinson, the policyholder, and Donovan, Keon's father, assert in conclusory terms that Donovan was a named insured under that policy. The paper captioned "Auto Renewal" and submitted by Keon did not state that Donovan was an additional insured or even an additional driver under the policy. All it stated was that it was for informational purposes only and that Donovan was a licensed driver listed in the policy. This was insufficient to warrant a determination that the petition should have been dismissed, and in fact, actually created a factual question as to Donovan's status, and perforce Keon's status, as his status is directly dependent on Donovan's status.
+
+Accordingly, upon being presented with these papers the Supreme Court should not have dismissed the petition. Rather, it should have directed a hearing on the issue of Donovan's status (see CPLR 409, 410; Matter of Country-Wide Ins. Co. [Briones], 149 AD2d 313 [1989]; cf. Matter of People v Telehublink Corp., 301 AD2d 1006 [2003]; Matter of Friends World Coll. v Nicklin, 249 AD2d 393 [1998]; see also Alexander, Practice Commentaries, McKinney's Cons Laws of NY, Book 7B, CPLR 409). Accordingly, we remit the matter to the Supreme Court, Queens County, for a hearing on the issue of Donovan's status. A final determination by the Supreme Court on the petition is to be held in abeyance pending this determination. Altman, J.P., Florio, Friedmann and Mastro, JJ., concur.
+
+

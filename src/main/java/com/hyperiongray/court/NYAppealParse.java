@@ -455,6 +455,7 @@ public class NYAppealParse {
                     ++fileNumber;
                     lineCount = 1;
                     writeHeader();
+                    System.out.println("Writing parsed file " +  fileNumber);
                 }
                 buf = new StringBuffer();
                 for (int e = 0; e < KEYS.values().length; ++e) {

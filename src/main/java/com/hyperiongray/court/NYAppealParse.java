@@ -22,7 +22,8 @@ public class NYAppealParse {
     private static Options options;
 
     public enum KEYS {
-        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, Keywords, FirstDate, AppealDate,
+        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, ADA, // assistant district attorney
+        Keywords, FirstDate, AppealDate,
         Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
         HarmlessError, NotHarmlessError, DocumentLength, SexOffender
     }
@@ -154,6 +155,17 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
+                        // county is found further down, but clos nearby
+                        if (value.toLowerCase().equals("the county")) {
+                            if (m.find()) {
+                                value = sanitize((m.group()));
+                            }
+                        }
+                        // this is a quotation, and county should have been found earlier or not at all
+                        if (value.toLowerCase().equals("v county")) {
+                            value = "";
+                        }
+
                         info.put(key.toString(), value);
                         ++stats.county;
                     }
@@ -291,7 +303,24 @@ public class NYAppealParse {
                     }
                     if (value.isEmpty()) {
                         ++stats.districtAttorneyProblem;
+                    } else {
+                        // also find ADA, next in parenthesis
+                        int index = text.toLowerCase().indexOf("district attorney");
+                        if (index > 0) {
+                            regex = "\\([a-zA-Z,\\.\\s]+\\)";
+                            m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text.substring(index));
+                            if (m.find()) {
+                                value = m.group();
+                                value = sanitize(value);
+                                value = betweenTheLions(value, '(', ')');
+                                info.put(KEYS.ADA.toString(), value);
+                            }
+                        }
                     }
+                    continue;
+
+                case ADA:
+                    // just done above, together with District Attorney
                     continue;
 
                 case HarmlessError:

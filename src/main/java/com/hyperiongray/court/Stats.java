@@ -1,10 +1,8 @@
 package com.hyperiongray.court;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
-/**
- * Created by mark on 5/28/15.
- */
 public class Stats {
     public int docs;
     public int caseNumber;
@@ -24,6 +22,9 @@ public class Stats {
     public int firstDate;
     public int appealDate;
     public int modeOfConviction;
+    public int fileNumber = 0;
+
+    private Date startDate = new Date();
 
     DecimalFormat df = new DecimalFormat("####0.0");
     public String toString() {
@@ -46,7 +47,9 @@ public class Stats {
                         "Crimes: " + ratio(crimes, criminal) + "%\n" +
                         "County: " + ratio(county, filesInDir) + "%\n" +
                         "Mode of conviction: " + ratio(modeOfConviction, criminal) + "%\n" +
-                        "Keywords: " + ratio(keywords, filesInDir) + "%\n";
+                        "Keywords: " + ratio(keywords, filesInDir) + "%\n" +
+                        "Number of output files: " + fileNumber + "\n" +
+                        "Runtime: " + ( (new Date().getTime() - startDate.getTime()) / 1000 + " seconds");
     }
     private String success(int problems, int total) {
         return df.format(100. * (total - problems) / total);
@@ -54,5 +57,4 @@ public class Stats {
     private String ratio(int good, int total) {
         return df.format(100. * good / total);
     }
-
 }

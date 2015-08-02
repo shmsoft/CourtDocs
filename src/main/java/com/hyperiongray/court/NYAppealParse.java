@@ -33,7 +33,6 @@ public class NYAppealParse {
     private String inputDir;
     private String outputFile;
     private int breakSize = 10000;
-    private int fileNumber = 0;
     private char separator = '|';
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
@@ -448,14 +447,14 @@ public class NYAppealParse {
                 }
                 buf.deleteCharAt(buf.length() - 1);
                 buf.append("\n");
-                FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), true);
+                FileUtils.write(new File(outputFile + stats.fileNumber + ".csv"), buf.toString(), true);
                 ++stats.metadata;
                 ++lineCount;
                 if (lineCount >= breakSize) {
-                    ++fileNumber;
+                    ++stats.fileNumber;
                     lineCount = 1;
                     writeHeader();
-                    System.out.println("Writing parsed file " +  fileNumber);
+                    System.out.println("Writing parsed file " + stats.fileNumber);
                 }
                 buf = new StringBuffer();
                 for (int e = 0; e < KEYS.values().length; ++e) {
@@ -507,7 +506,7 @@ public class NYAppealParse {
         buf.deleteCharAt(buf.length() - 1);
         buf.append("\n");
         // create new file, append = false
-        FileUtils.write(new File(outputFile + fileNumber + ".csv"), buf.toString(), false);
+        FileUtils.write(new File(outputFile + stats.fileNumber + ".csv"), buf.toString(), false);
     }
 
     private String betweenTheLions(String text, char lion1, char lion2) {

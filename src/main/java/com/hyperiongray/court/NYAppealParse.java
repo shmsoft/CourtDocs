@@ -37,13 +37,13 @@ public class NYAppealParse {
     private char separator = '|';
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
-    String [] keywords = {"unanimouslys*affirmed|affirmed",
-            "unanimouslys*modified|modified",
-            "unanimouslys*reversed|reversed",
-            "unanimouslys*dismissed|dismissed",
-            "cases*iss*held",
-            "decisions*iss*reserved",
-            "matters*iss*remitted"}
+    String [] keywords = {"unanimously\\s*affirmed|affirmed",
+            "unanimously\\s*modified|modified",
+            "unanimously\\s*reversed|reversed",
+            "unanimously\\s*dismissed|dismissed",
+            "cases*is\\s*held",
+            "decisions*is\\s*reserved",
+            "matters*is\\s*remitted"}
             ;
 
     boolean sexOffender = false;

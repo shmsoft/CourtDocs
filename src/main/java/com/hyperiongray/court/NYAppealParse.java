@@ -80,7 +80,10 @@ public class NYAppealParse {
             KEYS key = KEYS.values()[e];
             value = "";
 
-            info.put(key.toString(), value);
+            // put in a placeholder value - unless something was already parsed together with a different key, out of order
+            if (!info.containsKey(key.toString())) {
+                info.put(key.toString(), value);
+            }
 
             switch (key) {
                 case File:
@@ -304,15 +307,15 @@ public class NYAppealParse {
                     if (value.isEmpty()) {
                         ++stats.districtAttorneyProblem;
                     } else {
-                        // also find ADA, next in parenthesis
+                        // also find ADA, which is next to DA, in parenthesis
                         int index = text.toLowerCase().indexOf("district attorney");
                         if (index > 0) {
                             regex = "\\([a-zA-Z,\\.\\s]+\\)";
                             m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text.substring(index));
                             if (m.find()) {
                                 value = m.group();
-                                value = sanitize(value);
                                 value = betweenTheLions(value, '(', ')');
+                                value = sanitize(value);
                                 info.put(KEYS.ADA.toString(), value);
                             }
                         }

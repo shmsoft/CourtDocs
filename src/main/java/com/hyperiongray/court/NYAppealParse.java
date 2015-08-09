@@ -19,9 +19,11 @@ public class NYAppealParse {
     private static Options options;
 
     public enum KEYS {
-        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, Keywords, FirstDate, AppealDate,
+        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, ADA, // assistant district attorney
+        Keywords, GroundsForAppeal, FirstDate, AppealDate,
         Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
-        HarmlessError, NotHarmlessError, DocumentLength, SexOffender
+        HarmlessError, ProsecutMisconduct, DocumentLength
+        //, SexOffender
     }
 
     private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
@@ -33,15 +35,21 @@ public class NYAppealParse {
     private char separator = '|';
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
-    String [] keywords = {"unanimouslys*affirmed|affirmed",
-            "unanimouslys*modified|modified",
-            "unanimouslys*reversed|reversed",
-            "unanimouslys*dismissed|dismissed",
-            "cases*iss*held",
-            "decisions*iss*reserved",
-            "matters*iss*remitted"}
-            ;
+    String[] keywords = {"unanimously\\s*affirmed|affirmed",
+            "unanimously\\s*modified|modified",
+            "unanimously\\s*reversed|reversed",
+            "unanimously\\s*dismissed|dismissed",
+            "cases*is\\s*held",
+            "decisions*is\\s*reserved",
+            "matters*is\\s*remitted"};
+    String[] grounds = {
+            "sufficient", "speedy", "suppress", "sex offense registry", "double jeopardy", "ineffective counsel",
+            "coerce", "coercion", "incapac", "mental", "resentenc", "sever", "youth", "juror", "instructions"
+    };
 
+    String[] defense = {
+            "public\\s+defender", "conflict\\s+defender", "legal\\s+aid"
+    };
     boolean sexOffender = false;
     String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
 
@@ -76,7 +84,10 @@ public class NYAppealParse {
             KEYS key = KEYS.values()[e];
             value = "";
 
-            info.put(key.toString(), value);
+            // put in a placeholder value - unless something was already parsed together with a different key, out of order
+            if (!info.containsKey(key.toString())) {
+                info.put(key.toString(), value);
+            }
 
             switch (key) {
                 case File:
@@ -112,12 +123,12 @@ public class NYAppealParse {
                     }
                     continue;
 
-                case SexOffender:
-                    info.put(KEYS.SexOffender.toString(), sexOffender? "Y" : "");
-                    if (sexOffender) {
-                        ++stats.sexOffence;
-                    }
-                    continue;
+//                case SexOffender:
+//                    info.put(KEYS.SexOffender.toString(), sexOffender? "Y" : "");
+//                    if (sexOffender) {
+//                        ++stats.sexOffence;
+//                    }
+//                    continue;
 
                 case DocumentLength:
                     info.put(KEYS.DocumentLength.toString(), Integer.toString(text.length()));
@@ -151,6 +162,17 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
+                        // county is found further down, but clos nearby
+                        if (value.toLowerCase().equals("the county")) {
+                            if (m.find()) {
+                                value = sanitize((m.group()));
+                            }
+                        }
+                        // this is a quotation, and county should have been found earlier or not at all
+                        if (value.toLowerCase().equals("v county")) {
+                            value = "";
+                        }
+
                         info.put(key.toString(), value);
                         ++stats.county;
                     }
@@ -174,15 +196,21 @@ public class NYAppealParse {
                     if (!value.isEmpty()) ++stats.keywords;
                     continue;
 
+                case GroundsForAppeal:
+                    value = findAll(text, grounds);
+                    info.put(key.toString(), value);
+                    continue;
+
                 case FirstDate:
                     value = "";
-                    regex = "(rendered|entered|dated) " + months + " [0-9]+?, 2[0-1][0-9][0-9]";
-                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                    regex = "(rendered|entered|dated|filed) " + months + " [0-9]+?, 2[0-1][0-9][0-9]";
+                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(textFlow);
                     if (m.find()) {
                         value = m.group();
                         value = value.replaceAll("[Rr]endered ", "");
                         value = value.replaceAll("[Ee]ntered ", "");
                         value = value.replaceAll("[Dd]ated ", "");
+                        value = value.replaceAll("[Ff]iled ", "");
                         value = sanitize(value);
                         info.put(key.toString(), value);
                     }
@@ -198,7 +226,7 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
-                        info.put(key.toString(),value);
+                        info.put(key.toString(), value);
                     }
                     if (!value.isEmpty()) ++stats.appealDate;
                     continue;
@@ -238,16 +266,16 @@ public class NYAppealParse {
                         ++stats.judges;
                     }
                     if (value.isEmpty()) {
-                        regex = "\\.\\s[A-Z].+concur\\.";
+                        regex = ".+concur\\.";
                         m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                         if (m.find()) {
                             // hack, could not do it with regex
                             value = m.group();
-                            int index = value.lastIndexOf(". ");
-                            if (index > 0) {
-                                value = sanitize(value.substring(index + 2));
-                                value = value.substring(0, value.length() - "concur.".length());
+                            value = value.substring(0, value.length() - "concur.".length());
+                            if (value.indexOf(". ") > 0) {
+                                value = value.substring(value.lastIndexOf(". "));
                             }
+                            value = sanitize(value);
                         }
                         info.put(key.toString(), value);
                         ++stats.judges;
@@ -255,12 +283,12 @@ public class NYAppealParse {
                     continue;
 
                 case Defense:
-                    regex = "";
-                    // TODO
+                    value = findAll(text, defense);
+                    info.put(key.toString(), value);
                     continue;
 
                 case DefendantAppellant:
-                    regex = "petitioners-plaintiffs-appellants";
+                    regex = "defendant-appellant";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         info.put(key.toString(), sanitize(m.group()));
@@ -268,7 +296,7 @@ public class NYAppealParse {
                     continue;
 
                 case DefendantRespondent:
-                    regex = "respondents-defendants-respondents";
+                    regex = "defendant-respondent";
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         info.put(key.toString(), sanitize(m.group()));
@@ -282,22 +310,49 @@ public class NYAppealParse {
                     m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
                     if (m.find()) {
                         value = m.group().substring(2);
-                        value = value.substring(0,  value.length() - "District Attorney".length());
+                        value = value.substring(0, value.length() - "District Attorney".length());
                         value = sanitize(value);
                         info.put(key.toString(), value);
                     }
                     if (value.isEmpty()) {
                         ++stats.districtAttorneyProblem;
+                    } else {
+                        // also find ADA, which is next to DA, in parenthesis
+                        int index = text.toLowerCase().indexOf("district attorney");
+                        if (index > 0) {
+                            regex = "\\([a-zA-Z,\\.\\s]+of counsel\\)";
+                            m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text.substring(index));
+                            if (m.find()) {
+                                value = m.group();
+                                value = betweenTheLions(value, '(', ')');
+                                value = sanitize(value);
+                                info.put(KEYS.ADA.toString(), value);
+                            }
+                        }
                     }
                     continue;
 
-                case HarmlessError:
-                    // TODO
+                case ADA:
+                    // just done above, together with District Attorney
                     continue;
 
-                case NotHarmlessError:
-                    // TODO
+                case HarmlessError:
+                    regex = "([^.]*?harmless[^.]*\\.)";
+                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                    if (m.find()) {
+                        info.put(key.toString(), sanitize(m.group()));
+                    }
                     continue;
+
+                case ProsecutMisconduct:
+                    regex = "prosecut[a-zA-Z\\s]*misconduct";
+                    m = Pattern.compile(regex, Pattern.CASE_INSENSITIVE).matcher(text);
+                    if (m.find()) {
+                        info.put(key.toString(), sanitize(m.group()));
+                    }
+                    continue;
+
+
 
                 default:
                     logger.error("Aren't you forgetting something, Mr.? How about {} field?", key.toString());
@@ -517,9 +572,9 @@ public class NYAppealParse {
         }
     }
 
-    private String findAll(String text, String [] expr) {
+    private String findAll(String text, String[] expr) {
         StringBuilder results = new StringBuilder();
-        for (String regex: expr) {
+        for (String regex : expr) {
             Matcher m = Pattern.compile(regex).matcher(text);
             if (m.find()) results.append(sanitize(m.group())).append(";");
         }

@@ -1,0 +1,77 @@
+
+	People v Barney
+	2015 NY Slip Op 02529 [126 AD3d 1245]
+	March 26, 2015
+	Appellate Division, Third Department
+	Published by New York State Law Reporting
+Bureau pursuant to Judiciary Law § 431.
+	As corrected through Wednesday, April 29, 2015
+
+
+
+
+
+
+
+[*1]
+
+	 The People of the State of New York, Respondent, v
+Joshua Barney, Appellant.
+
+
+
+
+
+Martin J. McGuinness, Saratoga Springs, for appellant.
+
+Glenn MacNeill, Acting District Attorney, Malone, for respondent.
+
+
+
+
+
+McCarthy, J. Appeal from an order of the County Court of Franklin County (Main
+Jr., J.), entered June 26, 2013, which classified defendant as a risk level three sex
+offender and a sexually violent offender pursuant to the Sex Offender Registration
+Act.
+
+Defendant was charged in two indictments with rape in the first degree, rape in the
+second degree (two counts) and rape in the third degree, stemming from his sexual
+contact with two girls, aged 14 and 16. He pleaded guilty to attempted rape in the first
+degree in full satisfaction of the charges and was sentenced to 31/2 years in
+prison with 15 years of postrelease supervision. The Board of Examiners of Sex
+Offenders prepared a risk assessment instrument that presumptively classified defendant
+as a risk level three sex offender (135 points) and a sexually violent offender in
+accordance with the Sex Offender Registration Act (see Correction Law art 6-C).
+Following a hearing, County Court reduced defendant's total risk factor score to 115
+points, still within the presumptive risk level three classification. The court also classified
+defendant as a sexually violent offender. Defendant now appeals.
+
+We affirm. Defendant's sole contention on appeal is that he was improperly assessed
+30 points under risk factor 9 for the same conduct that he had been assessed 10 points
+under risk factor 8. We disagree. Both risk factors relate to an offender's criminal history.
+Offenders are assessed 10 points under risk factor 8 if they were 20 years old or younger
+at the time of their first sex crime (see Sex Offender Registration Act: Risk
+Assessment Guidelines and Commentary at 13 [2006]). The basis for points being
+assessed in this category is that "[t]he offender's age at the commission of his [or her]
+first sex crime . . . is a factor associated with [*2]recidivism: those who offend at a young age are more
+prone to reoffend" (Sex Offender Registration Act: Risk Assessment Guidelines and
+Commentary at 13 [2006]). Regarding risk factor 9, as relevant here, an offender is
+assessed 30 points for a prior conviction or adjudication for a prior violent felony,
+misdemeanor sex crime or endangering the welfare of a child. According to the Risk
+Assessment Guidelines, "[a]n offender's prior criminal history is significantly related to
+his [or her] likelihood of sexual recidivism, particularly when his [or her] past includes
+violent crimes or sex offenses" (Sex Offender Registration Act: Risk Assessment
+Guidelines and Commentary at 13 [2006]). In our view, the age of offenders at the time
+of their first sex crime and whether they have a criminal history that includes violent
+crimes or sex offenses are not duplicative factors resulting in the assessment of points for
+the same conduct, but, rather, are cumulative predictors of the likelihood of reoffense (see People v Pietarniello, 53
+AD3d 475, 476-477 [2008], lv denied 11 NY3d 707 [2008]; but see People v Wilbert, 35
+AD3d 1220, 1221 [2006]). Accordingly, County Court did not err in assessing
+points under risk factors 8 and 9 for the same underlying offense.
+
+Lahtinen, J.P., Egan Jr. and Clark, JJ., concur. Ordered that the order is affirmed,
+without costs.
+
+
+

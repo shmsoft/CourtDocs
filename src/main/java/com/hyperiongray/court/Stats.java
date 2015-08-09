@@ -12,10 +12,11 @@ public class Stats {
     public int judges;
     public int court;
     public int districtAttorneyProblem;
+    public int adaProblem;
     public int gapDays;
     public int civil;
     public int criminal;
-    public int sexOffence;
+//    public int sexOffence;
     public int crimes;
     public int county;
     public int keywords;
@@ -43,7 +44,8 @@ public class Stats {
                         "Judge: " + ratio(judge, filesInDir) + "%\n" +
                         "Other judges present: " + ratio(judges, filesInDir) + "%\n" +
                         "District attorney: " + success(districtAttorneyProblem, criminal) + "%\n" +
-                        "Sex offender: " + ratio(sexOffence, filesInDir) + "%\n" +
+                        "Assistant district attorney: " + success(adaProblem, criminal) + "\n" +
+//                        "Sex offender: " + ratio(sexOffence, filesInDir) + "%\n" +
                         "Crimes: " + ratio(crimes, criminal) + "%\n" +
                         "County: " + ratio(county, filesInDir) + "%\n" +
                         "Mode of conviction: " + ratio(modeOfConviction, criminal) + "%\n" +

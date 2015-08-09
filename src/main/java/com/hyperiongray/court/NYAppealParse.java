@@ -14,9 +14,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by mark on 5/20/15.
- */
 public class NYAppealParse {
     private static final Logger logger = LoggerFactory.getLogger(NYAppealParse.class);
     private static Options options;

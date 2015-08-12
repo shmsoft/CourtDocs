@@ -16,7 +16,7 @@ public class Stats {
     public int gapDays;
     public int civil;
     public int criminal;
-//    public int sexOffence;
+    //    public int sexOffence;
     public int crimes;
     public int county;
     public int keywords;
@@ -28,6 +28,7 @@ public class Stats {
     private Date startDate = new Date();
 
     DecimalFormat df = new DecimalFormat("####0.0");
+
     public String toString() {
         return
                 "Parsing success stats:\n" +
@@ -50,12 +51,14 @@ public class Stats {
                         "County: " + ratio(county, filesInDir) + "%\n" +
                         "Mode of conviction: " + ratio(modeOfConviction, criminal) + "%\n" +
                         "Keywords: " + ratio(keywords, filesInDir) + "%\n" +
-                        "Number of output files: " + fileNumber + "\n" +
-                        "Runtime: " + ( (new Date().getTime() - startDate.getTime()) / 1000 + " seconds");
+                        "Number of output files: " + (fileNumber + 1) + "\n" +
+                        "Runtime: " + ((new Date().getTime() - startDate.getTime()) / 1000 + " seconds");
     }
+
     private String success(int problems, int total) {
         return df.format(100. * (total - problems) / total);
     }
+
     private String ratio(int good, int total) {
         return df.format(100. * good / total);
     }

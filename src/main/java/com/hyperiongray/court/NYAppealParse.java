@@ -100,7 +100,7 @@ public class NYAppealParse {
 
     private Pattern HARMLESS_ERROR_PATTERN = Pattern.compile("([^.]*?harmless[^.]*\\.)", Pattern.CASE_INSENSITIVE);
 
-    private Pattern PROSECUT_PATTERN = Pattern.compile("prosecut[a-zA-Z\\s]*misconduct", Pattern.CASE_INSENSITIVE);
+    private Pattern PROSECUTOR_MISCONDUCT_PATTERN = Pattern.compile("prosecut[a-zA-Z\\s]*misconduct", Pattern.CASE_INSENSITIVE);
     // END OF compiled PATTERNs
 
     public Map<String, String> extractInfo(File file) throws IOException {
@@ -334,32 +334,39 @@ public class NYAppealParse {
 
                 case DefendantAppellant:;
                     m = DEFENDANT_APPELLANT_PATTERN.matcher(text);
+//                    if (m.find()) {
+//                        value = m.group();
+//                        if (value.equals(DEF_APP)) {
+//                            // take the previous line
+//                            int defAppIndex = text.indexOf(DEF_APP);
+//                            printAround(text, defAppIndex);
+//                            if (defAppIndex >= 0) {
+//                                int indexBefore = text.lastIndexOf("\n", defAppIndex);
+//                                printAround(text, indexBefore);
+//                                if (indexBefore > 0) {
+//                                    int indexBeforeBefore = text.lastIndexOf("\n", indexBefore - 1);
+//                                    if (indexBeforeBefore >= 0) {
+//                                        value = text.substring(indexBeforeBefore, indexBefore);
+//                                        printAround(text, indexBeforeBefore);
+//                                    }
+//                                }
+//                            }
+//                         }
+//                        info.put(key.toString(), sanitize(value));
+//                    }
                     if (m.find()) {
-                        value = m.group();
-                        if (value.equals(DEF_APP)) {
-                            // take the previous line
-                            int defAppIndex = text.indexOf(DEF_APP);
-                            printAround(text, defAppIndex);
-                            if (defAppIndex >= 0) {
-                                int indexBefore = text.lastIndexOf("\n", defAppIndex);
-                                printAround(text, indexBefore);
-                                if (indexBefore > 0) {
-                                    int indexBeforeBefore = text.lastIndexOf("\n", indexBefore - 1);
-                                    if (indexBeforeBefore >= 0) {
-                                        value = text.substring(indexBeforeBefore, indexBefore);
-                                        printAround(text, indexBeforeBefore);
-                                    }
-                                }
-                            }
-                         }
-                        info.put(key.toString(), sanitize(value));
+                        info.put(key.toString(), "1");
+                    } else {
+                        info.put(key.toString(), "0");
                     }
                     continue;
 
                 case DefendantRespondent:
                     m = DEFENDANT_RESPONDENT_PATTERN.matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        info.put(key.toString(), "1");
+                    } else {
+                        info.put(key.toString(), "0");
                     }
                     continue;
 
@@ -397,31 +404,16 @@ public class NYAppealParse {
                     continue;
 
                 case HarmlessError:
-                    //regex = "([^.]*?harmless[^.]*\\.)";
-//                    m = HARMLESS_ERROR_PATTERN.matcher(text);
-//                    if (m.find()) {
-//                        info.put(key.toString(), sanitize(m.group()));
-//                    }
-
-                    int harmIndex = text.indexOf("harmless");
-                    if (harmIndex > -1) {
-                        int startIndex = readBackAndReturnIndex(text, harmIndex, '.');
-                        int lastIndex = text.indexOf('.', startIndex + 1);
-                        if (startIndex > -1) {
-                            if (lastIndex > -1) {
-                                value = text.substring(startIndex + 1, lastIndex);
-                            } else {
-                                value = text.substring(startIndex);
-                            }
-                            info.put(key.toString(), sanitize(value));
-                        }
+                    m = HARMLESS_ERROR_PATTERN.matcher(text);
+                    if (m.find()) {
+                        info.put(key.toString(), sanitize(m.group()));
                     }
 
                     continue;
 
                 case ProsecutMisconduct:
                     //regex = "prosecut[a-zA-Z\\s]*misconduct";
-                    m = PROSECUT_PATTERN.matcher(text);
+                    m = PROSECUTOR_MISCONDUCT_PATTERN.matcher(text);
                     if (m.find()) {
                         info.put(key.toString(), sanitize(m.group()));
                     }
@@ -488,38 +480,38 @@ public class NYAppealParse {
                 ++stats.crimes;
             }
         }
-        if (info.containsKey(KEYS.DefendantAppellant.toString())) {
-            // the answer is in the previous line
-            value = info.get(KEYS.DefendantAppellant.toString());
-            int valueInd = text.indexOf(value);
-            if (valueInd > 0) {
-                int endLine = text.lastIndexOf("\n", valueInd);
-                if (endLine > 0) {
-                    int startLine = text.lastIndexOf("\n", endLine - 1);
-                    if (startLine > 0) {
-                        value = text.substring(startLine + 1, endLine);
-                        value = sanitize(value);
-                        info.put(KEYS.DefendantAppellant.toString(), value);
-                    }
-                }
-            }
-        }
-        if (info.containsKey(KEYS.DefendantRespondent.toString())) {
-            // the answer is in the previous line
-            value = info.get(KEYS.DefendantRespondent.toString());
-            int valueInd = text.indexOf(value);
-            if (valueInd > 0) {
-                int endLine = text.lastIndexOf("\n", valueInd);
-                if (endLine > 0) {
-                    int startLine = text.lastIndexOf("\n", endLine - 1);
-                    if (startLine > 0) {
-                        value = text.substring(startLine + 1, endLine);
-                        value = sanitize(value);
-                        info.put(KEYS.DefendantRespondent.toString(), value);
-                    }
-                }
-            }
-        }
+//        if (info.containsKey(KEYS.DefendantAppellant.toString())) {
+//            // the answer is in the previous line
+//            value = info.get(KEYS.DefendantAppellant.toString());
+//            int valueInd = text.indexOf(value);
+//            if (valueInd > 0) {
+//                int endLine = text.lastIndexOf("\n", valueInd);
+//                if (endLine > 0) {
+//                    int startLine = text.lastIndexOf("\n", endLine - 1);
+//                    if (startLine > 0) {
+//                        value = text.substring(startLine + 1, endLine);
+//                        value = sanitize(value);
+//                        info.put(KEYS.DefendantAppellant.toString(), value);
+//                    }
+//                }
+//            }
+//        }
+//        if (info.containsKey(KEYS.DefendantRespondent.toString())) {
+//            // the answer is in the previous line
+//            value = info.get(KEYS.DefendantRespondent.toString());
+//            int valueInd = text.indexOf(value);
+//            if (valueInd > 0) {
+//                int endLine = text.lastIndexOf("\n", valueInd);
+//                if (endLine > 0) {
+//                    int startLine = text.lastIndexOf("\n", endLine - 1);
+//                    if (startLine > 0) {
+//                        value = text.substring(startLine + 1, endLine);
+//                        value = sanitize(value);
+//                        info.put(KEYS.DefendantRespondent.toString(), value);
+//                    }
+//                }
+//            }
+//        }
         return info;
     }
 

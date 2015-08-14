@@ -91,7 +91,8 @@ public class NYAppealParse {
     private Pattern JUDGES_1_PATTERN = Pattern.compile("Present[–—:].+", Pattern.CASE_INSENSITIVE);
     private Pattern JUDGES_2_PATTERN = Pattern.compile(".+concur\\.", Pattern.CASE_INSENSITIVE);
 
-    private Pattern DEFENDANT_APPELLANT_PATTERN = Pattern.compile("defendant-appellant[s]?", Pattern.CASE_INSENSITIVE);
+    private final String DEF_APP = "defendant-appellant";
+    private Pattern DEFENDANT_APPELLANT_PATTERN = Pattern.compile(DEF_APP + "[s]?", Pattern.CASE_INSENSITIVE);
     private Pattern DEFENDANT_RESPONDENT_PATTERN = Pattern.compile("defendant-respondent[s]?", Pattern.CASE_INSENSITIVE);
 
     private Pattern DA_1_PATTERN = Pattern.compile("\\n[a-zA-Z,.\\s]*District Attorney", Pattern.CASE_INSENSITIVE);
@@ -305,8 +306,7 @@ public class NYAppealParse {
                 case Judges:
                     value = "";
                     // includes a special dash
-                    //regex = "Present[–—:].+";
-                    m = JUDGES_1_PATTERN.matcher(text);
+                    m = JUDGES_1_PATTERN.matcher(textFlow);
                     if (m.find()) {
                         value = m.group();
                         value = value.substring("Present".length() + 1);
@@ -314,49 +314,13 @@ public class NYAppealParse {
                         ++stats.judges;
                     }
                     if (value.isEmpty()) {
-                        //regex = ".+concur\\.";
-//                        m = JUDGES_2_PATTERN.matcher(text);
-//                        if (m.find()) {
-//                            // hack, could not do it with regex
-//                            value = m.group();
-//                            value = value.substring(0, value.length() - "concur.".length());
-//                            if (value.indexOf(". ") > 0) {
-//                                value = value.substring(value.lastIndexOf(". "));
-//                            }
-//                            value = sanitize(value);
-//                        }
-
-                        int cIndex = text.indexOf("concur.");
-                        cIndex = cIndex > -1 ? cIndex : text.indexOf("concur;");
-                        if (cIndex > -1) {
-                            value = readBackToLine(text, cIndex);
-                            int breakIndex = value.lastIndexOf("). ");
-
-                            int withoutMeritIndex = value.indexOf("without merit");
-                            withoutMeritIndex = withoutMeritIndex > -1 ? withoutMeritIndex + "without merit".length() : -1;
-
-                            breakIndex = breakIndex > -1 ? breakIndex : withoutMeritIndex;
-                            if (breakIndex == -1) {
-                                breakIndex = value.lastIndexOf(". ");
-                            }
-
-                            if (breakIndex > -1) {
-                                value = value.substring(breakIndex + 2);
-                            }
+                        m = JUDGES_2_PATTERN.matcher(text);
+                        if (m.find()) {
+                            // hack, could not do it with regex
+                            value = m.group();
+                            value = value.substring(0, value.length() - "concur.".length());
+                            value = sanitize(value);
                         }
-
-                        //Try Concur-
-                        int clIndex = text.indexOf("Concur—");
-                        if (clIndex > -1) {
-                            int endOfConcurIndex = clIndex + "Concur—".length();
-                            int endOfLineIndex = text.indexOf('\n', clIndex);
-                            if (endOfLineIndex > -1) {
-                                value = text.substring(endOfConcurIndex, endOfLineIndex);
-                            } else {
-                                value = text.substring(endOfConcurIndex);
-                            }
-                        }
-
                         value = sanitize(value);
                         info.put(key.toString(), value);
                         ++stats.judges;
@@ -368,16 +332,31 @@ public class NYAppealParse {
                     info.put(key.toString(), value);
                     continue;
 
-                case DefendantAppellant:
-                    //regex = "defendant-appellant";
+                case DefendantAppellant:;
                     m = DEFENDANT_APPELLANT_PATTERN.matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        value = m.group();
+                        if (value.equals(DEF_APP)) {
+                            // take the previous line
+                            int defAppIndex = text.indexOf(DEF_APP);
+                            printAround(text, defAppIndex);
+                            if (defAppIndex >= 0) {
+                                int indexBefore = text.lastIndexOf("\n", defAppIndex);
+                                printAround(text, indexBefore);
+                                if (indexBefore > 0) {
+                                    int indexBeforeBefore = text.lastIndexOf("\n", indexBefore - 1);
+                                    if (indexBeforeBefore >= 0) {
+                                        value = text.substring(indexBeforeBefore, indexBefore);
+                                        printAround(text, indexBeforeBefore);
+                                    }
+                                }
+                            }
+                         }
+                        info.put(key.toString(), sanitize(value));
                     }
                     continue;
 
                 case DefendantRespondent:
-                    //regex = "defendant-respondent";
                     m = DEFENDANT_RESPONDENT_PATTERN.matcher(text);
                     if (m.find()) {
                         info.put(key.toString(), sanitize(m.group()));
@@ -386,24 +365,14 @@ public class NYAppealParse {
 
                 case DistrictAttorney:
                     if (!criminal) continue;
-                    //regex = "\\n[a-zA-Z,.\\s]+District Attorney";
-
-//                    m = DA_1_PATTERN.matcher(text);
-//                    if (m.find()) {
-//                        value = m.group().substring(2);
-//                        value = value.substring(0, value.length() - "District Attorney".length());
-//                        value = sanitize(value);
-//                        info.put(key.toString(), value);
-//                    }
-                    value = "";
-
-                    int daIndex = text.indexOf(", District Attorney");
-                    if (daIndex > -1) {
-                        value = readBackToLine(text, daIndex);
-                        value = value.replaceAll("Acting", "");
+                    m = DA_1_PATTERN.matcher(text);
+                    if (m.find()) {
+                        value = m.group().substring(2);
+                        value = value.substring(0, value.length() - "District Attorney".length());
                         value = sanitize(value);
                         info.put(key.toString(), value);
                     }
+                    value = "";
 
                     if (value.isEmpty()) {
                         ++stats.districtAttorneyProblem;
@@ -700,6 +669,13 @@ public class NYAppealParse {
             ch = text.charAt(firstIndex);
         }
         return firstIndex;
+    }
+    // helper debug function
+    private void printAround(String str, int index) {
+        int circle = 20;
+        int start = index > circle ? index - circle : 0;
+        int end = str.length() > index + circle ? index + circle : str.length();
+        System.out.println(str.substring(start, end));
     }
 }
 

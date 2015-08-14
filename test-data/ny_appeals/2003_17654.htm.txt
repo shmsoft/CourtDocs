@@ -1,0 +1,97 @@
+
+	ABS Partnership v AirTran Airways
+	2003 NYSlipOp 17654
+	October 21, 2003
+	Appellate Division, First Department
+	Published by New York State Law Reporting Bureau pursuant to Judiciary Law § 431.
+	As corrected through Wednesday, January 7, 2004
+
+
+
+
+
+	ABS Partnership, Respondent,
+v
+AirTran Airways, Inc., et al., Appellants.
+
+
+
+
+First Department, October 21, 2003
+
+
+
+APPEARANCES OF COUNSEL
+
+Gordon Gordon & Schnapp, P.C. (Elliot Schnapp of counsel), for respondent.
+
+Greenberg Traurig LLP (Ronald D. Lefton, Toby S. Soli and Jennifer L. Neuner of counsel), for appellants.
+
+
+
+OPINION OF THE COURT
+
+Opinion by Saxe, J.
+
+
+The question presented on this appeal is whether the parties' contract is ambiguous on the question of how to determine the "Delivery Date" for purposes of defendant's right to cancel orders. We find the contract to be clear on its face, and therefore affirm the grant of summary judgment to plaintiff.
+
+Plaintiff ABS sells aircraft noise reduction equipment known as "hushkits," which are designed to bring DC-9 aircraft into compliance with federal noise pollution regulations. Defendant AirTran Airways, Inc., successor in interest to Valujet Airlines, Inc., is a commercial passenger airline. Plaintiff ABS and defendant AirTran Airways's predecessor in interest entered into agreements whereby defendant would purchase a total of 44 hushkits. At issue in this appeal are hushkit order numbers 38 through 41, or, more specifically, the cancellation of those orders.
+
+The Agreement contains a "Delivery Schedule" of "Delivery Dates" for the hushkits; the set delivery dates for the four hushkits at issue were June 15, 1999, July 15, 1999, August 15, 1999 and September 15, 1999. Section 11.2 of the Agreement, titled "Cancellation," permits cancellation on the following terms:
+
+
+"Purchaser shall be entitled to cancel all or any portion of this Agreement with respect to one or more Hushkits by notifying ABS of such cancellation and paying ABS the applicable cancellation fee in accordance with and as set forth in Exhibit 8 hereto [see below]. Upon receipt by ABS of such notice and cancellation fee, this Agreement shall terminate with respect to the Hushkits identified by Purchaser in its notice to ABS, with neither party having any further rights or obligations under this Agreement with respect thereto. Purchaser shall pay a cancellation fee to ABS in the amount, and on the terms, set forth in Exhibit 8 hereto and such cancellation shall only become effective upon the receipt by ABS of such cancellation fee."
+
+
+The cancellation fees payable by the purchaser in order to cancel an order are set forth in exhibit 8 to the Agreement: $50,000 where the order is canceled 61 or more days prior to the delivery date,[FN*]
+
+$100,000 where the order is canceled 31 to 60 days prior to the delivery date, and $150,000 where the order is canceled 30 or less days prior to the delivery date.
+
+In a letter postmarked July 15, 1999 and received by ABS on July 19, 1999, ABS was notified in writing of the airline's decision to cancel kits 38 through 44. The notice did not include payment of the cancellation fee, although AirTran indicated its intention to pay $400,000 in cancellation fees, according to the following formula: $100,000 for kit 38, and $50,000 each for kits 39 through 44.
+
+However, because the set delivery dates for hushkits 38 through 41 were June 15, 1999, July 15, 1999, August 15, 1999 and September 15, 1999, respectively, ABS rejected this calculation of the fee due. Its position was that hushkits 38 and 39 could no longer be cancelled because their scheduled delivery dates were passed, and that in any event a notice of cancellation was only effective if accompanied by the cancellation fee. Therefore, when the $400,000 cancellation fee was finally sent to ABS by AirTran on September 24, 1999, it was applied by ABS to kits 42 through 44, because by the time it was received, the contract's set delivery dates for kits 40 and 41, as well as 38 and 39, had already passed.
+
+ABS sued for the full contract price of hushkits 38 through 41, at a cost of $1,341,049 each, along with the price of certain spare parts that were delivered but never paid for. In its underlying motion for summary judgment, ABS claimed entitlement as a matter of law to lost profits amounting to $4,470,734.40, plus the price of the spare parts, reiterating its position that the cancellations of kits 38 through 41 were not effective. In opposition, AirTran asserted that it had an absolute right to cancel orders pursuant to section 11.2 of the Agreement, with the cancellation fee for each order not more than $150,000 per kit. It contended that the term "Delivery Date" as used in the Agreement meant the actual date for delivery, not the dates contained in exhibit 6, which were merely estimates, and that therefore it had not cancelled these kits after the "Delivery Dates" because no such dates had been in place; the exhibit 6 schedule had "lapsed," it maintained.
+
+The motion court rejected AirTran's contentions, granting summary judgment on the breach of contract claim as to liability, and referred the issue of damages to a referee. The court concluded that movant had set forth a prima facie case that AirTran had failed to effectively cancel kits 38 through 41 because AirTran had not paid a cancellation fee until September 24, 1999, which was after the "Delivery Dates" for those kits had passed. The court rejected AirTran's argument that the cancellations were not untimely because no firm delivery dates had been set and ruled that, even assuming that the parties had deviated from the scheduled "Delivery Dates" in the past, AirTran had not demonstrated that the parties intended to abandon the schedule of "Delivery Dates" for kits 38 through 41. It noted that section 10.1 of the Agreement provided that in the event of a default by AirTran, ABS was entitled to be compensated for the loss of its anticipated profits. Finally, the court stated that, based on the Agreement, ABS is entitled to be compensated for "the value of materials that it purchased and services that it had performed, as well as the loss of its anticipated profits." Defendants moved for renewal so that the court could consider the testimony of AirTran's former chief financial officer, whose deposition was taken after the motion for summary judgment was submitted. According to AirTran, the former officer's testimony demonstrated that material issues of fact exist as to whether the contractual "Delivery Dates" for the hushkits were binding on the parties and, in turn, whether AirTran effectively cancelled orders 38 through 41.
+
+The court denied the motion, noting that the deposition testimony was not really "new" evidence, given that this former officer had submitted an affidavit in opposition to the summary judgment motion. In any event, the court concluded, the deposition testimony did not set forth any additional information that would demonstrate that material factual issues remain.
+
+
+Discussion
+
+
+AirTran contends that the delivery schedule in the contract was merely an estimate, because delivery was subject to deferral if AirTran failed to deliver its modification parts to ABS's vendors at least 60 days before a scheduled delivery date, as contemplated in section 1.13 of the Agreement. Therefore, it reasons, the "Delivery Dates" listed in exhibit 6 were advisory only, and it had the right to cancel any order up until the actual delivery date.
+
+We are unable to accept this reasoning. It cannot be denied that the contract, and the parties' course of conduct, recognizes that for purposes of fulfilling the hushkit orders, the parties understood the mutable nature of the stated delivery dates, which would likely alter based upon the parties' preceding conduct. However, it does not follow that the stated delivery dates may be treated as mere estimates for purposes of cancellation of those orders. For purposes of cancellation of orders, or more specifically, for the purpose of determining the fee due for cancellation, there is no way for the parties to calculate the correct cancellation fee unless they use the stated delivery dates, because the applicable fee is calculated based upon the number of days prior to the delivery date that the cancellation took effect. If the buyer seeks to cancel an order 10 days before a set delivery date, under the contract it must pay the contract's $150,000 fee. But, if it is permitted to assert that the realistic delivery date would have been three months later, thereby reducing the contract's cancellation fee to $50,000, the contract's entire cancellation fee framework is virtually negated. Indeed, since there will not be a new delivery date if an order is cancelled, there is no other viable way to establish how far in advance of the delivery date the cancellation took place.
+
+Ultimately, unless we accept the exact terms of the contract's cancellation provisions as written, including its use of the defined "Delivery Dates" for this purpose, the whole complicated contract provision for canceling orders becomes virtually nullified.
+
+Because we must adopt the interpretation of a contract which gives effect to all its provisions (see PNC Capital Recovery v Mechanical Parking Sys., 283 AD2d 268 [2001], lv dismissed 96 NY2d 937 [2001]), we conclude that the cancellation provision of the contract unambiguously and clearly permits cancellation only prior to the "Delivery Dates" as they are stated in the Agreement, and only upon the payment of the set fee.
+
+To interpret the Agreement as AirTran suggests would give it complete, unilateral control over its own obligations under the contract; its obligation to purchase the ordered hushkits would never come into existence as long as it never delivered its modification parts. As the contract reads, however, when AirTran failed to meet the deadlines for its own performance of its preliminary obligations, the only thing deferred was ABS's obligation to physically deliver the hushkits. Indeed, the parties' prior contract had included a provision permitting AirTran to request in writing, on or before the first day of the month preceding the month in which a hushkit was scheduled for delivery, the deferral of up to 60 days of the "Delivery Date"; but that provision was deleted from the contract covering the orders in question. 
+
+When the terms of a contract are clear and unambiguous, the intent of the parties must be found within the four corners of the document, and the court must enforce it without recourse to parol evidence (see Unisys Corp. v Hercules, Inc., 224 AD2d 365 [1996]; Weisberger v Goldstein, 242 AD2d 622 [1997]). This rule is applicable here: the parties' intent and purpose regarding their rights and obligations may be determined solely through interpretation of the Agreement itself, making summary determination appropriate.
+
+Moreover, there is no dispute as to the sequence of events regarding AirTran's orders 38 through 41 which would preclude summary judgment (see Garcia v J.C. Duggan, Inc., 180 AD2d 579 [1992]). AirTran failed to cancel orders 38 through 41 in the manner provided for in the Agreement, and it is therefore now in default with respect to those orders. It is therefore liable under section 10.1 of the Agreement, which contains specific provision for the calculation of ABS's damages as the loss of its anticipated profits plus the value of materials that it purchased and services it performed. Far from working a forfeiture, as AirTran argues, this contractually defined remedy is the most logical approach to calculating ABS's damages (see Neri v Retail Mar. Corp., 30 NY2d 393 [1972]; UCC 2-708 [2]).
+
+Finally, the motion court correctly held that the deposition testimony of its former chief financial officer did not provide proper grounds for renewal, since on the original motion AirTran had provided an affidavit by that same individual, containing the same basic assertions (see Foley v Roche, 68 AD2d 558, 567-568 [1979]). Furthermore, because it is offered as demonstrating the parties' intent in regard to the inclusion of the contract's deferral provision, the newly offered evidence would be of value only in the event the court found that the contract's intent could not be gleaned from its terms, and required the admission of parol evidence.
+
+Accordingly, the order of the Supreme Court, New York County (Herman Cahn, J.), entered October 16, 2002, which granted plaintiff's motion for summary judgment as to liability in this action for breach of contract, and order, same court and Justice, entered February 28, 2003, which denied defendants' motion for renewal of the prior motion, should be affirmed, without costs.
+
+Buckley, P.J., Mazzarelli, Williams and Marlow, JJ., concur.
+
+Order, Supreme Court, New York County, entered October 16, 2002, and order, same court, entered February 28, 2003, affirmed, without costs.
+
+
+Footnotes
+
+
+
+
+Footnote *: The Agreement defines the term "Delivery Date" as the date specified in exhibit 6 for each hushkit.
+
+
+
+

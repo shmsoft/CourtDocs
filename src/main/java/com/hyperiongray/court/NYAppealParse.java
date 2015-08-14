@@ -66,7 +66,6 @@ public class NYAppealParse {
     String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
 
 
-    //REGEXP compiled Patterns
     private Pattern CRIMINAL_PATTERN = Pattern.compile("People v ", Pattern.CASE_INSENSITIVE);
     private Pattern SEX_OFFENDER_PATTERN = Pattern.compile("sex\\s*offender\\s*registration\\s*act", Pattern.CASE_INSENSITIVE);
 
@@ -82,6 +81,7 @@ public class NYAppealParse {
     private Pattern COUNTRY_PATTERN = Pattern.compile("[a-zA-Z]+\\sCounty", Pattern.CASE_INSENSITIVE);
 
     private Pattern JUDGE_PATTERN = Pattern.compile("(Court|County|Court of Claims) \\(.+?\\)");
+    private Pattern IN_PARENTHESES_PATTERN = Pattern.compile("\\(.+\\)");
 
     private Pattern FIRST_DATE_PATTERN = Pattern.compile("(rendered|entered|dated|filed|imposed|entered on or about) " + months + " [0-9]+?, [1-2][0-9][0-9][0-9]", Pattern.CASE_INSENSITIVE);
     private Pattern APPEAL_DATE_PATTERN = Pattern.compile(months + "\\s[0-9]+,\\s[0-9]+", Pattern.CASE_INSENSITIVE);
@@ -142,16 +142,14 @@ public class NYAppealParse {
                     continue;
                 case Casenumber:
                     value = "";
-                    //regex = "\\[[0-9]+\\sAD.+\\]";
                     m = CASE_NUMBER_1_PATTERN.matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
-                        if (value.length() >= 3 && value.length() < 15 && value.contains("AD")) {
+                        if (value.length() >= 3 && value.length() <= 15 && value.contains("AD")) {
                             info.put(key.toString(), value);
                         }
                     }
                     if (value.isEmpty()) {
-                        //regex = "[0-9]{4}.+NY.*Slip.*Op.*[0-9]+";
                         m = CASE_NUMBER_2_PATTERN.matcher(text);
                         if (m.find()) {
                             value = sanitize(m.group());
@@ -226,14 +224,14 @@ public class NYAppealParse {
                     continue;
 
                 case Judge:
-                    //regex = "(Court|County|Court of Claims) \\(.+?\\)";
                     m = JUDGE_PATTERN.matcher(textFlow);
-                    value = "";
                     if (m.find()) {
                         value = m.group();
-                        value = betweenTheLions(value, '(', ')');
+                        value = inParentheses(value);
                         info.put(key.toString(), sanitize(value));
                         ++stats.judge;
+                    } else {
+                        value = "";
                     }
                     continue;
 
@@ -413,11 +411,11 @@ public class NYAppealParse {
                         // also find ADA, which is next to DA, in parenthesis
                         int index = text.toLowerCase().indexOf("district attorney");
                         if (index > 0) {
-                            //regex = "\\([a-zA-Z,\\.\\s]+of counsel\\)";
                             m = DA_2_PATTERN.matcher(textFlow.substring(index));
                             if (m.find()) {
                                 value = m.group();
-                                value = betweenTheLions(value, '(', ')');
+                                value = inParentheses(value);
+                                value = value.substring(0, value.length() - "of counsel".length());
                                 value = sanitize(value);
                                 info.put(KEYS.ADA.toString(), value);
                             }
@@ -665,19 +663,14 @@ public class NYAppealParse {
         FileUtils.write(new File(outputFile + stats.fileNumber + ".csv"), buf.toString(), false);
     }
 
-    private String betweenTheLions(String text, char lion1, char lion2) {
-        if (text.charAt(0) == lion1 && text.charAt(text.length() - 1) == lion2) {
-            return text.substring(1, text.length() - 1);
+    private String inParentheses(String text) {
+        Matcher m = IN_PARENTHESES_PATTERN.matcher(text);
+        if (m.find()) {
+            String value = m.group();
+            return value.substring(1, value.length() - 1);
+        } else {
+            return text;
         }
-        return text;
-//        String regex = "\\" + lion1 + ".+" + "\\" + lion2;
-//        Matcher m = Pattern.compile(regex).matcher(text);
-//        if (m.find()) {
-//            String value = m.group();
-//            return value.substring(1, value.length() - 1);
-//        } else {
-//            return text;
-//        }
     }
 
     private String findAll(String text, Pattern[] patterns) {

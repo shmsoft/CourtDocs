@@ -375,7 +375,10 @@ public class NYAppealParse {
                     m = DA_1_PATTERN.matcher(text);
                     if (m.find()) {
                         value = m.group().substring(2);
-                        value = value.substring(0, value.length() - "District Attorney".length());
+                        int end = value.length() - "District Attorney".length();
+                        // TODO fix this hack
+                        if (end < 0) end = 0;
+                        value = value.substring(0, end);
                         value = sanitize(value);
                         info.put(key.toString(), value);
                     }

@@ -1,6 +1,3 @@
-(S3 README)
-What is this?
-
 This area of S3 is for Court Documents collections. The original documents are public, and the files here are also set with public access.
 
 1. NY appelate court decisions

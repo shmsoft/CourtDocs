@@ -1,17 +1,14 @@
 package com.hyperiongray.court;
 
-import com.google.common.io.Files;
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by mark on 5/20/15.

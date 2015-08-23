@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +27,7 @@ public class NYAppealParse {
 
     public enum KEYS {
         File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, ADA, // assistant district attorney
-        Keywords, GroundsForAppeal, FirstDate, AppealDate,
+        Keywords, GroundsForAppeal, Unanimous, FirstDate, AppealDate,
         Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
         HarmlessError, ProsecutMisconduct, DocumentLength
         //, SexOffender
@@ -42,10 +43,10 @@ public class NYAppealParse {
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
 
-    Pattern[] keywords = {Pattern.compile("unanimously\\s*affirmed|affirmed"),
-            Pattern.compile("unanimously\\s*modified|modified"),
-            Pattern.compile("unanimously\\s*reversed|reversed"),
-            Pattern.compile("unanimously\\s*dismissed|dismissed"),
+    Pattern[] keywords = {Pattern.compile("affirmed"),
+            Pattern.compile("modified"),
+            Pattern.compile("reversed"),
+            Pattern.compile("dismissed"),
             Pattern.compile("cases*is\\s*held"),
             Pattern.compile("decisions*is\\s*reserved"),
             Pattern.compile("matters*is\\s*remitted")};
@@ -62,6 +63,11 @@ public class NYAppealParse {
             Pattern.compile("legal\\s*aid\\s*BUREAU", Pattern.CASE_INSENSITIVE),
             Pattern.compile("legal\\s*aid\\s*SOCIETY", Pattern.CASE_INSENSITIVE)
     };
+    
+    Pattern[] unanimous = {
+    		 Pattern.compile("unanimous"), Pattern.compile("unanimously")
+    };
+    
     boolean sexOffender = false;
     String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
 
@@ -83,19 +89,27 @@ public class NYAppealParse {
     private Pattern JUDGE_PATTERN = Pattern.compile("(Court|County|Court of Claims) \\(.+?\\)");
     private Pattern IN_PARENTHESES_PATTERN = Pattern.compile("\\(.+\\)");
 
-    private Pattern FIRST_DATE_PATTERN = Pattern.compile("(rendered|entered|dated|filed|imposed|entered on or about) " + months + " [0-9]+?, [1-2][0-9][0-9][0-9]", Pattern.CASE_INSENSITIVE);
+    //rendered on or about October 26, 2007
+    //Judgment, Supreme Court, Bronx County (William Mogulescu, J.), rendered on or about October 26, 2007, unanimously affirmed.
+    
+    private Pattern FIRST_DATE_PATTERN = Pattern.compile("(rendered|entered|dated|filed|imposed|entered)( on or about)? " + months + " ([0-9]+?, [1-2][0-9][0-9][0-9])", Pattern.CASE_INSENSITIVE);
     private Pattern APPEAL_DATE_PATTERN = Pattern.compile(months + "\\s[0-9]+,\\s[0-9]+", Pattern.CASE_INSENSITIVE);
 
     private Pattern CONVICTION_PATTERN = Pattern.compile("plea\\s*of\\s*guilty|jury\\s*verdict|nonjury\\s*trial", Pattern.CASE_INSENSITIVE);
-
-    private Pattern JUDGES_1_PATTERN = Pattern.compile("Present[–—:].+", Pattern.CASE_INSENSITIVE);
+   
+    private Pattern CRIMES_PATTERN_1 = Pattern.compile("upon\\s(his|her)\\splea\\sof\\sguilty,\\sof\\s(.*)\\.", Pattern.CASE_INSENSITIVE);
+    private Pattern CRIMES_PATTERN_2 = Pattern.compile("convicting\\s(him|his)\\sof\\s(.*),\\supon", Pattern.CASE_INSENSITIVE);
+    
+    
+    private Pattern JUDGES_1_PATTERN = Pattern.compile("^(Present[–—:]).+", Pattern.CASE_INSENSITIVE);
     private Pattern JUDGES_2_PATTERN = Pattern.compile(".+concur\\.", Pattern.CASE_INSENSITIVE);
+    private Pattern JUDGES_3_PATTERN = Pattern.compile("^Concur[-—](.*)$", Pattern.CASE_INSENSITIVE);
 
     private final String DEF_APP = "defendant-appellant";
     private Pattern DEFENDANT_APPELLANT_PATTERN = Pattern.compile(DEF_APP + "[s]?", Pattern.CASE_INSENSITIVE);
     private Pattern DEFENDANT_RESPONDENT_PATTERN = Pattern.compile("defendant-respondent[s]?", Pattern.CASE_INSENSITIVE);
 
-    private Pattern DA_1_PATTERN = Pattern.compile("\\n[a-zA-Z,.\\s]*District Attorney", Pattern.CASE_INSENSITIVE);
+    private Pattern DA_1_PATTERN = Pattern.compile("(.*)\\sDistrict Attorney", Pattern.CASE_INSENSITIVE);
     private Pattern DA_2_PATTERN = Pattern.compile("\\([a-zA-Z,\\.\\s]+of\\s+counsel[\\);]", Pattern.CASE_INSENSITIVE);
 
     private Pattern HARMLESS_ERROR_PATTERN = Pattern.compile("([^.]*?harmless[^.]*\\.)", Pattern.CASE_INSENSITIVE);
@@ -105,6 +119,7 @@ public class NYAppealParse {
 
     public Map<String, String> extractInfo(File file) throws IOException {
         String text = FileUtils.readFileToString(file);
+        text = text.replaceAll("" + separator, "");
         String textFlow = text.replaceAll("\\r\\n|\\r|\\n", " ");
 
         //System.out.println("Text flow: " + textFlow);
@@ -219,8 +234,10 @@ public class NYAppealParse {
                             value = "";
                         }
 
-                        info.put(key.toString(), value);
-                        ++stats.county;
+                        if (NYAppealUtil.isCounty(value)) {
+	                        info.put(key.toString(), value);
+	                        ++stats.county;
+                        }
                     }
                     continue;
 
@@ -249,19 +266,17 @@ public class NYAppealParse {
 
                 case FirstDate:
                     value = "";
-                    //regex = "(rendered|entered|dated|filed) " + months + " [0-9]+?, 2[0-1][0-9][0-9]";
-                    m = FIRST_DATE_PATTERN.matcher(textFlow);
-                    if (m.find()) {
-                        value = m.group();
-                        value = value.replaceAll("[Rr]endered ", "");
-                        value = value.replaceAll("(Dated|dated|DATED) ", "");
-                        value = value.replaceAll("[Ff]iled ", "");
-                        value = value.replaceAll("[Ii]mposed ", "");
-                        value = value.replaceAll("[Ee]ntered on or about ", "");
-                        value = value.replaceAll("[Ee]ntered ", "");
-
-                        value = sanitize(value);
-                        info.put(key.toString(), value);
+                    List<String> sentences = NYAppealUtil.splitToSentences(textFlow);
+                    for (String sentence : sentences) {
+	                    //regex = "(rendered|entered|dated|filed) " + months + " [0-9]+?, 2[0-1][0-9][0-9]";
+                    	//Judgment, Supreme Court, Bronx County (William Mogulescu, J.), rendered on or about October 26, 2007, unanimously affirmed.
+	                    m = FIRST_DATE_PATTERN.matcher(sentence);
+	                    if (m.find()) {
+	                        value = m.group(3) + " " + m.group(4);
+	                        value = sanitize(value);
+	                        info.put(key.toString(), value);
+	                        break;
+	                    }
                     }
                     if (!value.isEmpty()) ++stats.firstDate;
                     if (value.isEmpty()) {
@@ -280,6 +295,15 @@ public class NYAppealParse {
                     if (!value.isEmpty()) ++stats.appealDate;
                     continue;
 
+                case Unanimous:
+                	String results = findAll(text, unanimous);
+                	if (!results.isEmpty()) {
+                		info.put(key.toString(), "1");
+                	} else {
+                		info.put(key.toString(), "0");
+                	}
+                	continue;
+                	
                 case Gap_days:
                     // done later
                     continue;
@@ -300,31 +324,86 @@ public class NYAppealParse {
                     continue;
 
                 case Crimes:
-                    // done later together with mode of conviction
+//                	 if (criminal && info.containsKey(KEYS.ModeOfConviction.toString())) {
+//                         String mode = info.get(KEYS.ModeOfConviction.toString());
+//                         // crime is from here till the end of the line
+//                         value = "";
+//                         int crimeStart = text.indexOf(mode);
+//                         if (crimeStart > 0) {
+//                             crimeStart += mode.length();
+//                             int comma = text.indexOf("\n", crimeStart);
+//                             if (comma > 0 && (comma - crimeStart < 5)) crimeStart += (comma - crimeStart + 1);
+//                             int crimeEnd = text.indexOf(".", crimeStart);
+//                             if (crimeEnd > 0) {
+//                                 value = text.substring(crimeStart, crimeEnd);
+//                                 value = sanitize(value);
+//                                 info.put(KEYS.Crimes.toString(), value);
+//                                 ++stats.crimes;
+//                             }
+//                         }
+//                         if (value.isEmpty() && sexOffender) {
+//                         }
+//                     }
+                	if (criminal) {
+                		m = CRIMES_PATTERN_1.matcher(textFlow);
+                		if (m.find()) {
+                			value = m.group(2);
+                		} else {
+                			m = CRIMES_PATTERN_2.matcher(textFlow);
+                			if (m.find()) {
+                				value = m.group(2);
+                			}
+                		}
+                		if (!value.isEmpty() && value.contains(".")) {
+                			value = value.split("\\.")[0];
+                		}
+                		if (value.isEmpty() && sexOffender) {
+                            value = "risk pursuant to Sex Offender Registration Act";
+                		}
+                		if (!value.isEmpty()) {
+                			 info.put(KEYS.Crimes.toString(), value);
+                             ++stats.crimes;
+                		}
+                	}
                     continue;
 
                 case Judges:
-                    value = "";
-                    // includes a special dash
-                    m = JUDGES_1_PATTERN.matcher(textFlow);
-                    if (m.find()) {
-                        value = m.group();
-                        value = value.substring("Present".length() + 1);
-                        info.put(key.toString(), sanitize(value));
-                        ++stats.judges;
-                    }
-                    if (value.isEmpty()) {
-                        m = JUDGES_2_PATTERN.matcher(text);
-                        if (m.find()) {
-                            // hack, could not do it with regex
-                            value = m.group();
-                            value = value.substring(0, value.length() - "concur.".length());
-                            value = sanitize(value);
+                	sentences = NYAppealUtil.splitToSentences(textFlow);
+                	for (String sentence : sentences) {
+                		if (sentence.contains("concur except")) { // Filter out 'All concur except .. '
+                        	continue;
                         }
+                		m = JUDGES_1_PATTERN.matcher(sentence);
+                		if (m.find()) {
+                			 value = sentence.substring(m.group(1).length());
+                			 break;
+                		} else {
+	                        m = JUDGES_2_PATTERN.matcher(sentence);
+	                        if (m.find()) {
+                            	value = sentence.substring(0, sentence.length() - "concur.".length());
+	                            break;
+	                        } else {
+	                        	m = JUDGES_3_PATTERN.matcher(sentence);
+	                        	if (m.find()) {
+	                            	value = m.group(1);
+	                            	if (value.startsWith("-")) {
+	                            		value = value.substring(1);
+	                            	}
+		                            break;
+	                        	}
+	                        }
+                		}
+                	}
+                	if (!value.isEmpty()) {
                         value = sanitize(value);
+                        // occasionally list of judges ends with (Filed .. )
+                        int idx = value.indexOf("(Filed");
+                        if (idx >= 0) {
+                        	value = value.substring(0, idx);
+                        }
                         info.put(key.toString(), value);
                         ++stats.judges;
-                    }
+                	}
                     continue;
 
                 case Defense:
@@ -372,21 +451,27 @@ public class NYAppealParse {
 
                 case DistrictAttorney:
                     if (!criminal) continue;
-                    m = DA_1_PATTERN.matcher(text);
-                    if (m.find()) {
-                        value = m.group().substring(2);
-                        int end = value.length() - "District Attorney".length();
-                        // TODO fix this hack
-                        if (end < 0) end = 0;
-                        value = value.substring(0, end);
-                        value = sanitize(value);
-                        info.put(key.toString(), value);
-                    }
+                    sentences = NYAppealUtil.splitToSentences(textFlow);
                     value = "";
-
-                    if (value.isEmpty()) {
-                        ++stats.districtAttorneyProblem;
-                    } else {
+                    for (String sentence : sentences) {
+                    	sentence = sanitize(sentence);
+	                    m = DA_1_PATTERN.matcher(sentence);
+	                    if (m.find()) {
+	                        value = m.group();
+	                        int end = value.length() - "District Attorney".length();
+	                        // TODO fix this hack
+	                        if (end < 0) end = 0;
+	                        value = value.substring(0, end);
+	                        value = value.replaceAll("Acting", "");
+	                        value = sanitize(value);
+	                        if (NYAppealUtil.isProbablyName(value)) {
+		                        info.put(key.toString(), value);
+		                        break;
+	                        }
+	                    }
+                    }
+                    
+                    if (!value.isEmpty()) {
                         // also find ADA, which is next to DA, in parenthesis
                         int index = text.toLowerCase().indexOf("district attorney");
                         if (index > 0) {
@@ -399,6 +484,8 @@ public class NYAppealParse {
                                 info.put(KEYS.ADA.toString(), value);
                             }
                         }
+                    } else {
+			            ++stats.districtAttorneyProblem;
                     }
                     continue;
 
@@ -460,29 +547,6 @@ public class NYAppealParse {
             }
         }
         if (gapParsed) ++stats.gapDays;
-        if (criminal && info.containsKey(KEYS.ModeOfConviction.toString())) {
-            String mode = info.get(KEYS.ModeOfConviction.toString());
-            // crime is from here till the end of the line
-            value = "";
-            int crimeStart = text.indexOf(mode);
-            if (crimeStart > 0) {
-                crimeStart += mode.length();
-                int comma = text.indexOf("\n", crimeStart);
-                if (comma > 0 && (comma - crimeStart < 5)) crimeStart += (comma - crimeStart + 1);
-                int crimeEnd = text.indexOf(".", crimeStart);
-                if (crimeEnd > 0) {
-                    value = text.substring(crimeStart, crimeEnd);
-                    value = sanitize(value);
-                    info.put(KEYS.Crimes.toString(), value);
-                    ++stats.crimes;
-                }
-            }
-            if (value.isEmpty() && sexOffender) {
-                value = "risk pursuant to Sex Offender Registration Act";
-                info.put(KEYS.Crimes.toString(), value);
-                ++stats.crimes;
-            }
-        }
 //        if (info.containsKey(KEYS.DefendantAppellant.toString())) {
 //            // the answer is in the previous line
 //            value = info.get(KEYS.DefendantAppellant.toString());
@@ -602,7 +666,7 @@ public class NYAppealParse {
         // limit the length
         if (value.length() > MAX_FIELD_LENGTH) value = value.substring(0, MAX_FIELD_LENGTH - 1) + "...";
         // take out new lines
-        value = value.replaceAll("\\r\\n|\\r|\\n", " ");
+        value = value.replaceAll("\\r\\n|\\r|\\n|\"", " ");
         value = value.trim();
         if (value.endsWith(",")) value = value.substring(0, value.length() - 1);
         return value;
@@ -612,6 +676,7 @@ public class NYAppealParse {
         File[] files = new File(outputFile).getParentFile().listFiles();
         for (File file : files) {
             if (file.getName().endsWith("csv")) file.delete();
+            if (file.getName().endsWith("_raw.txt")) file.delete();
         }
     }
 

@@ -7,3 +7,7 @@ output/
 test-output/
 logs/
 archive/
+.DS_Store
+.classpath
+.settings
+.project

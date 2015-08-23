@@ -45,7 +45,7 @@ public class Stats {
                         "Judge: " + ratio(judge, filesInDir) + "%\n" +
                         "Other judges present: " + ratio(judges, filesInDir) + "%\n" +
                         "District attorney: " + success(districtAttorneyProblem, criminal) + "%\n" +
-                        "Assistant district attorney: " + success(adaProblem, criminal) + "\n" +
+                        "Assistant district attorney: " + success(adaProblem, criminal) + "%\n" +
 //                        "Sex offender: " + ratio(sexOffence, filesInDir) + "%\n" +
                         "Crimes: " + ratio(crimes, criminal) + "%\n" +
                         "County: " + ratio(county, filesInDir) + "%\n" +

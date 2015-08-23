@@ -677,12 +677,13 @@ public class NYAppealParse {
     }
 
     private void cleanupFirst() {
-        File[] files = new File(outputFile).getParentFile().listFiles();
-        if (files != null) {
+        try {
+            File[] files = new File(outputFile).getParentFile().listFiles();
             for (File file : files) {
                 if (file.getName().endsWith("csv")) file.delete();
-                if (file.getName().endsWith("_raw.txt")) file.delete();
             }
+        } catch (Exception e) {
+            logger.warn("Cleaning exception, but that's OK", e);
         }
     }
 

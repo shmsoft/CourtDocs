@@ -617,6 +617,10 @@ public class NYAppealParse {
         stats.filesInDir = files.length;
 
         for (File file : files) {
+            if (files == null) {
+                logger.warn("No files found in input");
+                return;
+            }
             try {
                 // right now, we analyze only "txt", and consider the rest as garbage
                 if (!file.getName().endsWith("txt")) continue;

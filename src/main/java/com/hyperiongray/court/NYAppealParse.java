@@ -674,9 +674,11 @@ public class NYAppealParse {
 
     private void cleanupFirst() {
         File[] files = new File(outputFile).getParentFile().listFiles();
-        for (File file : files) {
-            if (file.getName().endsWith("csv")) file.delete();
-            if (file.getName().endsWith("_raw.txt")) file.delete();
+        if (files != null) {
+            for (File file : files) {
+                if (file.getName().endsWith("csv")) file.delete();
+                if (file.getName().endsWith("_raw.txt")) file.delete();
+            }
         }
     }
 

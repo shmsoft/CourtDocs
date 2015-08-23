@@ -1,6 +1,6 @@
 package com.hyperiongray.court;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,8 +171,8 @@ public class NYAppealUtil {
 
     private static List<String> loadCounties() {
         try {
-            List<String> lines = FileUtils.readLines(new File(NYAppealUtil.class.getClassLoader().getResource("counties_list.txt").getFile()));
-            return lines;
+        	InputStream stream = NYAppealUtil.class.getClassLoader().getResourceAsStream("counties_list.txt");
+        	return IOUtils.readLines(stream);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

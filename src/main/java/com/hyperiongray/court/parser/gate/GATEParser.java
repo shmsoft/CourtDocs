@@ -265,6 +265,7 @@ public class GATEParser implements IParser {
 	
 	private Date parseDate(String dateStr) {
 		dateStr = sanitize(dateStr);
+		dateStr = dateStr.replace(".", "");
 		try {
 			return StringUtils.isEmpty(dateStr) ? null : dateFormat.parse(dateStr);
 		} catch (ParseException e) {

@@ -180,7 +180,10 @@ public class Application {
     private String createHeader() throws IOException {
         StringBuffer buf = new StringBuffer();
         for (int e = 0; e < DataKey.values().length; ++e) {
-            String key = DataKey.values()[e].toString();
+            DataKey key = DataKey.values()[e];
+            if (!key.isOutputToFile()) {
+            	continue;
+            }
             buf.append(key).append(CommonConstants.CSV_FIELD_SEPARATOR);
         }
         buf.deleteCharAt(buf.length() - 1);

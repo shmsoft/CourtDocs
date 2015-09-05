@@ -136,11 +136,12 @@ public class CalCorrectRehab {
     private void appendToOutput(String text) throws IOException {
         Files.append(text + "\n", new File(outputFileName), Charset.defaultCharset());
     }
+    
     private void prepareOutput() {
         if (outputFileName != null) {
             new File(new File(outputFileName).getParent()).mkdirs();
             new File(outputFileName).delete();
         }
-
     }
+    
 }

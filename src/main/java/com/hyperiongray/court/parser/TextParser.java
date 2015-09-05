@@ -1,10 +1,9 @@
-package com.hyperiongray.court;
+package com.hyperiongray.court.parser;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,34 +11,20 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NYAppealParse {
-    private static final Logger logger = LoggerFactory.getLogger(NYAppealParse.class);
-    private static Options options;
+import com.hyperiongray.court.CommonConstants;
 
-    public enum KEYS {
-        File, Casenumber, CivilKriminal, Court, County, Judge, DistrictAttorney, ADA, // assistant district attorney
-        Keywords, GroundsForAppeal, Unanimous, FirstDate, AppealDate,
-        Gap_days, ModeOfConviction, Crimes, Judges, Defense, DefendantAppellant, DefendantRespondent,
-        HarmlessError, ProsecutMisconduct, DocumentLength
-        //, SexOffender
-    }
+public class TextParser implements IParser {
+    private static final Logger logger = LoggerFactory.getLogger(TextParser.class);
+
 
     private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
+	public static final String PARSER_TYPE = "regular";
     private Stats stats = new Stats();
 
-    private String inputDir;
-    private String outputFile;
-    private int breakSize = 10000;
-    private char separator = '|';
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMMdd,yyyy");
 
@@ -70,7 +55,6 @@ public class NYAppealParse {
     
     boolean sexOffender = false;
     String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
-
 
     private Pattern CRIMINAL_PATTERN = Pattern.compile("People v ", Pattern.CASE_INSENSITIVE);
     private Pattern SEX_OFFENDER_PATTERN = Pattern.compile("sex\\s*offender\\s*registration\\s*act", Pattern.CASE_INSENSITIVE);
@@ -117,13 +101,17 @@ public class NYAppealParse {
     private Pattern PROSECUTOR_MISCONDUCT_PATTERN = Pattern.compile("prosecut[a-zA-Z\\s]*misconduct", Pattern.CASE_INSENSITIVE);
     // END OF compiled PATTERNs
 
-    public Map<String, String> extractInfo(File file) throws IOException {
+    public Stats getStats() {
+    	return stats;
+    }
+    
+    public Map<DataKey, String> parseFile(File file) throws IOException {
         String text = FileUtils.readFileToString(file);
-        text = text.replaceAll("" + separator, "");
+        text = text.replaceAll("" + CommonConstants.CSV_FIELD_SEPARATOR, "");
         String textFlow = text.replaceAll("\\r\\n|\\r|\\n", " ");
 
         //System.out.println("Text flow: " + textFlow);
-        Map<String, String> info = new HashMap<>();
+        Map<DataKey, String> info = new HashMap<>();
         // there are so many exceptions that 'case' is preferable to a generic loops with exceptions
         Matcher m;
         String value = "";
@@ -141,20 +129,22 @@ public class NYAppealParse {
         // sex offender
         m = SEX_OFFENDER_PATTERN.matcher(text);
         sexOffender = m.find();
-        if (sexOffender) criminal = true;
+        if (sexOffender) {
+        	criminal = true;
+        }
 
-        for (int e = 0; e < KEYS.values().length; ++e) {
-            KEYS key = KEYS.values()[e];
+        for (int e = 0; e < DataKey.values().length; ++e) {
+        	DataKey key = DataKey.values()[e];
             value = "";
 
             // put in a placeholder value - unless something was already parsed together with a different key, out of order
             if (!info.containsKey(key.toString())) {
-                info.put(key.toString(), value);
+                info.put(key, value);
             }
 
             switch (key) {
                 case File:
-                    info.put(KEYS.File.toString(), file.getName());
+                    info.put(DataKey.File, file.getName());
                     continue;
                 case Casenumber:
                     value = "";
@@ -162,25 +152,27 @@ public class NYAppealParse {
                     if (m.find()) {
                         value = sanitize(m.group());
                         if (value.length() >= 3 && value.length() <= 15 && value.contains("AD")) {
-                            info.put(key.toString(), value);
+                            info.put(key, value);
                         }
                     }
                     if (value.isEmpty()) {
                         m = CASE_NUMBER_2_PATTERN.matcher(text);
                         if (m.find()) {
                             value = sanitize(m.group());
-                            info.put(key.toString(), value);
+                            info.put(key, value);
                         }
                     }
-                    if (!value.isEmpty()) ++stats.caseNumber;
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.Casenumber);
+                    }
                     continue;
 
                 case CivilKriminal:
-                    info.put(KEYS.CivilKriminal.toString(), criminal ? "K" : "C");
+                    info.put(DataKey.CivilKriminal, criminal ? "K" : "C");
                     if (criminal) {
-                        ++stats.criminal;
+                    	stats.inc(DataKey.Criminal);
                     } else {
-                        ++stats.civil;
+                    	stats.inc(DataKey.Civil);
                     }
                     continue;
 
@@ -192,7 +184,7 @@ public class NYAppealParse {
 //                    continue;
 
                 case DocumentLength:
-                    info.put(KEYS.DocumentLength.toString(), Integer.toString(text.length()));
+                    info.put(DataKey.DocumentLength, Integer.toString(text.length()));
                     continue;
                 case Court:
                     value = "";
@@ -202,7 +194,7 @@ public class NYAppealParse {
                     m = COURT_1_PATTERN.matcher(text);
                     if (m.find()) {
                         value = m.group();
-                        info.put(key.toString(), sanitize(value));
+                        info.put(key, sanitize(value));
                     }
                     if (value.isEmpty()) {
                         //regex = "\\s+[a-zA-Z]+\\s+Committee\\s+[a-zA-Z\\s]+";
@@ -210,12 +202,16 @@ public class NYAppealParse {
                         if (m.find()) {
                             value = m.group();
                             value = value.substring(1);
-                            info.put(key.toString(), sanitize(value));
+                            info.put(key, sanitize(value));
                         }
-                        info.put(key.toString(), value);
+                        info.put(key, value);
                     }
-                    if (!value.isEmpty()) ++stats.court;
-                    if (value.isEmpty()) logger.debug("Court problem in file {} ", file.getName());
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.Court);
+                    }
+                    if (value.isEmpty()) {
+                    	logger.debug("Court problem in file {} ", file.getName());
+                    }
                     continue;
                 case County:
                     value = "";
@@ -235,8 +231,8 @@ public class NYAppealParse {
                         }
 
                         if (NYAppealUtil.isCounty(value)) {
-	                        info.put(key.toString(), value);
-	                        ++stats.county;
+	                        info.put(key, value);
+	                        stats.inc(DataKey.County, value);
                         }
                     }
                     continue;
@@ -246,8 +242,8 @@ public class NYAppealParse {
                     if (m.find()) {
                         value = m.group();
                         value = inParentheses(value);
-                        info.put(key.toString(), sanitize(value));
-                        ++stats.judge;
+                        info.put(key, sanitize(value));
+                        stats.inc(DataKey.Judge, value);
                     } else {
                         value = "";
                     }
@@ -255,13 +251,15 @@ public class NYAppealParse {
 
                 case Keywords:
                     value = findAll(text, keywords);
-                    info.put(key.toString(), value);
-                    if (!value.isEmpty()) ++stats.keywords;
+                    info.put(key, value);
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.Keywords, value);
+                    }
                     continue;
 
                 case GroundsForAppeal:
                     value = findAll(text, grounds);
-                    info.put(key.toString(), value);
+                    info.put(key, value);
                     continue;
 
                 case FirstDate:
@@ -274,11 +272,13 @@ public class NYAppealParse {
 	                    if (m.find()) {
 	                        value = m.group(3) + " " + m.group(4);
 	                        value = sanitize(value);
-	                        info.put(key.toString(), value);
+	                        info.put(key, value);
 	                        break;
 	                    }
                     }
-                    if (!value.isEmpty()) ++stats.firstDate;
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.FirstDate, value);
+                    }
                     if (value.isEmpty()) {
                         logger.warn("First date parsing error in {}", file.getName());
                     }
@@ -290,17 +290,19 @@ public class NYAppealParse {
                     m = APPEAL_DATE_PATTERN.matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
-                        info.put(key.toString(), value);
+                        info.put(key, value);
                     }
-                    if (!value.isEmpty()) ++stats.appealDate;
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.AppealDate, value);
+                    }
                     continue;
 
                 case Unanimous:
                 	String results = findAll(text, unanimous);
                 	if (!results.isEmpty()) {
-                		info.put(key.toString(), "1");
+                		info.put(key, "1");
                 	} else {
-                		info.put(key.toString(), "0");
+                		info.put(key, "0");
                 	}
                 	continue;
                 	
@@ -315,9 +317,11 @@ public class NYAppealParse {
                     m = CONVICTION_PATTERN.matcher(text);
                     if (m.find()) {
                         value = sanitize(m.group());
-                        info.put(key.toString(), value);
+                        info.put(key, value);
                     }
-                    if (!value.isEmpty()) ++stats.modeOfConviction;
+                    if (!value.isEmpty()) {
+                    	stats.inc(DataKey.ModeOfConviction);
+                    }
                     if (value.isEmpty()) {
                         logger.warn("Problem with mode of conviction in {}", file.getName());
                     }
@@ -361,8 +365,8 @@ public class NYAppealParse {
                             value = "risk pursuant to Sex Offender Registration Act";
                 		}
                 		if (!value.isEmpty()) {
-                			 info.put(KEYS.Crimes.toString(), value);
-                             ++stats.crimes;
+                			 info.put(DataKey.Crimes, value);
+                			 stats.inc(DataKey.Crimes);
                 		}
                 	}
                     continue;
@@ -401,14 +405,14 @@ public class NYAppealParse {
                         if (idx >= 0) {
                         	value = value.substring(0, idx);
                         }
-                        info.put(key.toString(), value);
-                        ++stats.judges;
+                        info.put(key, value);
+                        stats.inc(DataKey.Judges);
                 	}
                     continue;
 
                 case Defense:
                     value = findAll(text, defense);
-                    info.put(key.toString(), value);
+                    info.put(key, value);
                     continue;
 
                 case DefendantAppellant:;
@@ -434,23 +438,25 @@ public class NYAppealParse {
 //                        info.put(key.toString(), sanitize(value));
 //                    }
                     if (m.find()) {
-                        info.put(key.toString(), "1");
+                        info.put(key, "1");
                     } else {
-                        info.put(key.toString(), "0");
+                        info.put(key, "0");
                     }
                     continue;
 
                 case DefendantRespondent:
                     m = DEFENDANT_RESPONDENT_PATTERN.matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), "1");
+                        info.put(key, "1");
                     } else {
-                        info.put(key.toString(), "0");
+                        info.put(key, "0");
                     }
                     continue;
 
                 case DistrictAttorney:
-                    if (!criminal) continue;
+                    if (!criminal) {
+                    	continue;
+                    }
                     sentences = NYAppealUtil.splitToSentences(textFlow);
                     value = "";
                     for (String sentence : sentences) {
@@ -465,7 +471,7 @@ public class NYAppealParse {
 	                        value = value.replaceAll("Acting", "");
 	                        value = sanitize(value);
 	                        if (NYAppealUtil.isProbablyName(value)) {
-		                        info.put(key.toString(), value);
+		                        info.put(key, value);
 		                        break;
 	                        }
 	                    }
@@ -481,11 +487,11 @@ public class NYAppealParse {
                                 value = inParentheses(value);
                                 value = value.substring(0, value.length() - "of counsel".length());
                                 value = sanitize(value);
-                                info.put(KEYS.ADA.toString(), value);
+                                stats.inc(DataKey.ADA, value);
                             }
                         }
                     } else {
-			            ++stats.districtAttorneyProblem;
+                    	stats.inc(DataKey.DistrictAttorneyProblem);
                     }
                     continue;
 
@@ -496,7 +502,7 @@ public class NYAppealParse {
                 case HarmlessError:
                     m = HARMLESS_ERROR_PATTERN.matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        info.put(key, sanitize(m.group()));
                     }
 
                     continue;
@@ -505,22 +511,24 @@ public class NYAppealParse {
                     //regex = "prosecut[a-zA-Z\\s]*misconduct";
                     m = PROSECUTOR_MISCONDUCT_PATTERN.matcher(text);
                     if (m.find()) {
-                        info.put(key.toString(), sanitize(m.group()));
+                        info.put(key, sanitize(m.group()));
                     }
                     continue;
 
 
                 default:
-                    logger.error("Aren't you forgetting something, Mr.? How about {} field?", key.toString());
+                	if (key.isOutputToFile()) {
+                		logger.error("Aren't you forgetting something, Mr.? How about {} field?", key.toString());
+                	}
 
             }
 
 
         }
         boolean gapParsed = false;
-        if (info.containsKey(KEYS.FirstDate.toString()) && info.containsKey(KEYS.AppealDate.toString())) {
-            String firstDateStr = info.get(KEYS.FirstDate.toString());
-            String appealDateStr = info.get(KEYS.AppealDate.toString());
+        if (info.containsKey(DataKey.FirstDate.toString()) && info.containsKey(DataKey.AppealDate.toString())) {
+            String firstDateStr = info.get(DataKey.FirstDate.toString());
+            String appealDateStr = info.get(DataKey.AppealDate.toString());
             Date firstDate = null;
             Date appealDate = null;
             if (!firstDateStr.isEmpty()) {
@@ -541,12 +549,14 @@ public class NYAppealParse {
                 long gap = appealDate.getTime() - firstDate.getTime();
                 int gapDays = (int) (gap / 1000 / 60 / 60 / 24);
                 if (gapDays > 0) {
-                    info.put(KEYS.Gap_days.toString(), Integer.toString(gapDays));
+                    info.put(DataKey.Gap_days, Integer.toString(gapDays));
                     gapParsed = true;
                 }
             }
         }
-        if (gapParsed) ++stats.gapDays;
+        if (gapParsed) {
+        	stats.inc(DataKey.Gap_days);
+        }
 //        if (info.containsKey(KEYS.DefendantAppellant.toString())) {
 //            // the answer is in the previous line
 //            value = info.get(KEYS.DefendantAppellant.toString());
@@ -582,91 +592,9 @@ public class NYAppealParse {
         return info;
     }
 
-    public static void main(String[] args) {
-        formOptions();
-        if (args.length == 0) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("NYAppealParse - extract legal information from court cases", options);
-            return;
-        }
-        NYAppealParse instance = new NYAppealParse();
-        try {
-            if (!instance.parseOptions(args)) {
-                return;
-            }
-            instance.parseDocuments();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.print(instance.stats.toString());
-    }
-
-    private static void formOptions() {
-        options = new Options();
-        options.addOption("i", "inputDir", true, "Input directory");
-        options.addOption("o", "outputFile", true, "Output file, .csv will be added");
-        options.addOption("b", "breakSize", true, "Output file size in lines");
-    }
-
-    private void parseDocuments() throws IOException {
-        cleanupFirst();
-        int lineCount = 0;
-        writeHeader();
-        File[] files = new File(inputDir).listFiles();
-        Arrays.sort(files);
-        stats.filesInDir = files.length;
-
-        for (File file : files) {
-            if (files == null) {
-                logger.warn("No files found in input");
-                return;
-            }
-            try {
-                // right now, we analyze only "txt", and consider the rest as garbage
-                if (!file.getName().endsWith("txt")) continue;
-                ++stats.docs;
-                StringBuffer buf = new StringBuffer();
-                Map<String, String> answer = extractInfo(file);
-                for (int e = 0; e < KEYS.values().length; ++e) {
-                    String key = KEYS.values()[e].toString();
-                    String value = "";
-                    if (answer.containsKey(key)) {
-                        value = answer.get(key);
-                    }
-                    buf.append(value).append(separator);
-                }
-                buf.deleteCharAt(buf.length() - 1);
-                buf.append("\n");
-                FileUtils.write(new File(outputFile + stats.fileNumber + ".csv"), buf.toString(), true);
-                ++stats.metadata;
-                ++lineCount;
-                if (lineCount >= breakSize) {
-                    buf = new StringBuffer();
-                    ++stats.fileNumber;
-                    lineCount = 1;
-                    writeHeader();
-                    System.out.println("Writing parsed file " + stats.fileNumber);
-                }
-            } catch (IOException e) {
-                logger.error("Error processing file {} " + file.getName());
-            }
-        }
-    }
-
-    private boolean parseOptions(String[] args) throws org.apache.commons.cli.ParseException {
-        CommandLineParser parser = new GnuParser();
-        CommandLine cmd = parser.parse(options, args);
-        inputDir = cmd.getOptionValue("inputDir");
-        outputFile = cmd.getOptionValue("outputFile");
-        if (cmd.hasOption("breakSize")) {
-            breakSize = Integer.parseInt(cmd.getOptionValue("breakSize"));
-        }
-        return true;
-    }
-
     private String sanitize(String value) {
         // remove all random occurrences of the separator
-        value = value.replaceAll("\\" + separator, "");
+        value = value.replaceAll("\\" + CommonConstants.CSV_FIELD_SEPARATOR, "");
         // limit the length
         if (value.length() > MAX_FIELD_LENGTH) value = value.substring(0, MAX_FIELD_LENGTH - 1) + "...";
         // take out new lines
@@ -674,29 +602,6 @@ public class NYAppealParse {
         value = value.trim();
         if (value.endsWith(",")) value = value.substring(0, value.length() - 1);
         return value;
-    }
-
-    private void cleanupFirst() {
-        try {
-            File[] files = new File(outputFile).getParentFile().listFiles();
-            for (File file : files) {
-                if (file.getName().endsWith("csv")) file.delete();
-            }
-        } catch (Exception e) {
-            logger.warn("Cleaning exception, but that's OK", e);
-        }
-    }
-
-    private void writeHeader() throws IOException {
-        StringBuffer buf = new StringBuffer();
-        for (int e = 0; e < KEYS.values().length; ++e) {
-            String key = KEYS.values()[e].toString();
-            buf.append(key).append(separator);
-        }
-        buf.deleteCharAt(buf.length() - 1);
-        buf.append("\n");
-        // create new file, append = false
-        FileUtils.write(new File(outputFile + stats.fileNumber + ".csv"), buf.toString(), false);
     }
 
     private String inParentheses(String text) {
@@ -737,6 +642,7 @@ public class NYAppealParse {
         }
         return firstIndex;
     }
+    
     // helper debug function
     private void printAround(String str, int index) {
         int circle = 20;

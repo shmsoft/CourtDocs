@@ -1,6 +1,7 @@
 package com.hyperiongray.court;
 
 import com.google.common.io.Files;
+import com.hyperiongray.court.parser.NYAppealUtil;
 import com.hyperiongray.pull.GetPull;
 import org.apache.commons.cli.*;
 import org.apache.commons.io.FileUtils;
@@ -109,9 +110,11 @@ public class NYAppealCollect {
                     String fileName = new File(downloadLink).getName();
                     Files.write(courtDoc, new File(outputDir + "/html/" + fileName), Charset.defaultCharset());
                     NYAppealUtil.sleep(delay);
+                    
                     // parsed as text
                     InputStream stream = new ByteArrayInputStream(courtDoc.getBytes(StandardCharsets.UTF_8));
                     String htmlText = tika.parseToString(stream, metadata);
+                    
                     // TODO - we are not using metadata as yet, but it may be a good idea
                     Files.write(htmlText, new File(outputDir + "/txt/" + fileName + ".txt"), Charset.defaultCharset());
 

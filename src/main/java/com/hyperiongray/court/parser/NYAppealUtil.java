@@ -1,4 +1,4 @@
-package com.hyperiongray.court;
+package com.hyperiongray.court.parser;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -178,7 +178,7 @@ public class NYAppealUtil {
             return null;
         }
     }
-
+    
     private static class SearchResult {
 
         public int from, to;

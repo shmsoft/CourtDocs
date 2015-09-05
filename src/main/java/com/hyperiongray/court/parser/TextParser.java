@@ -22,7 +22,7 @@ public class TextParser implements IParser {
 
 
     private final static int MAX_FIELD_LENGTH = 100; // more than that is probably a bug, so don't make it a parameter
-	public static final String PARSER_TYPE = "regular";
+	public static final String PARSER_TYPE = "text";
     private Stats stats = new Stats();
 
     private String months = "(January|February|March|April|May|June|July|August|September|October|November|December)";
@@ -146,6 +146,9 @@ public class TextParser implements IParser {
                 case File:
                     info.put(DataKey.File, file.getName());
                     continue;
+                case CaseName:
+                	info.put(DataKey.CaseName, "");
+                	continue;
                 case Casenumber:
                     value = "";
                     m = CASE_NUMBER_1_PATTERN.matcher(text);

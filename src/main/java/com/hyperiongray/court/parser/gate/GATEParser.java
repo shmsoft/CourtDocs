@@ -107,7 +107,7 @@ public class GATEParser implements IParser {
 		gatePipeline.setCorpus(corpus);
 		gatePipeline.execute();
 
-		System.out.println(file.getName() + " Found annotations of the following types: " + doc.getAnnotations().getAllTypes());
+//		System.out.println(file.getName() + " Found annotations of the following types: " + doc.getAnnotations().getAllTypes());
 
 		AnnotationSet annotations = doc.getAnnotations();
 

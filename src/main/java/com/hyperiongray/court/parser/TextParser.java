@@ -138,7 +138,7 @@ public class TextParser implements IParser {
             value = "";
 
             // put in a placeholder value - unless something was already parsed together with a different key, out of order
-            if (!info.containsKey(key.toString())) {
+            if (!info.containsKey(key)) {
                 info.put(key, value);
             }
 
@@ -529,9 +529,9 @@ public class TextParser implements IParser {
 
         }
         boolean gapParsed = false;
-        if (info.containsKey(DataKey.FirstDate.toString()) && info.containsKey(DataKey.AppealDate.toString())) {
-            String firstDateStr = info.get(DataKey.FirstDate.toString());
-            String appealDateStr = info.get(DataKey.AppealDate.toString());
+        if (info.containsKey(DataKey.FirstDate) && info.containsKey(DataKey.AppealDate)) {
+            String firstDateStr = info.get(DataKey.FirstDate);
+            String appealDateStr = info.get(DataKey.AppealDate);
             Date firstDate = null;
             Date appealDate = null;
             if (!firstDateStr.isEmpty()) {

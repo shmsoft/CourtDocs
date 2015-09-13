@@ -56,7 +56,7 @@ public class Stats {
                 "Parsing success stats:\n" +
                         "Files in dir: " + get(DataKey.FiledInDir) + "\n" +
                         "Docs processed : " + ratio(get(DataKey.Docs), get(DataKey.FiledInDir)) + "%\n" +
-                        "Case number: " + ratio(get(DataKey.Casenumber), get(DataKey.FileNumber)) + "%\n" +
+                        "Case number: " + ratio(get(DataKey.Casenumber), get(DataKey.FiledInDir)) + "%\n" +
                         "Metadata extracted: " + ratio(get(DataKey.Metadata), get(DataKey.FiledInDir)) + "%\n" +
                         "Civil: " + ratio(get(DataKey.Civil), get(DataKey.FiledInDir)) + "%\n" +
                         "Criminal: " + ratio(get(DataKey.Criminal), get(DataKey.FiledInDir)) + "%\n" +

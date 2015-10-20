@@ -52,7 +52,11 @@ public class TextParser implements IParser {
     Pattern[] unanimous = {
     		 Pattern.compile("unanimous"), Pattern.compile("unanimously")
     };
-    
+
+    Pattern[] justice = {
+            Pattern.compile("interest\\s*of\\s*justice", Pattern.CASE_INSENSITIVE)
+    };
+
     boolean sexOffender = false;
     String sexOffenderKeywords = "sex\\s*offender\\s*registration\\s*act";
 
@@ -518,6 +522,11 @@ public class TextParser implements IParser {
                     }
                     continue;
 
+                case Justice:
+                    value = findAll(text, justice);
+                    info.put(key, value);
+                    if (!value.trim().isEmpty()) stats.inc(DataKey.Justice);
+                    continue;
 
                 default:
                 	if (key.isOutputToFile()) {

@@ -64,12 +64,12 @@ public class Application {
             	 IParser textParser = new TextParser();
             	 System.out.println("Using parser " + textParser.getClass().getSimpleName());
  	             parseAll(textParser);
- 	             System.out.print(textParser.getStats().toString());
+ 	             System.out.println(textParser.getStats().toString());
 
  	             IParser gateParser = new GATEParser(gateHome);
  	             System.out.println("Using parser " + gateParser.getClass().getSimpleName());
 	             parseAll(gateParser);
-	             System.out.print(gateParser.getStats().toString());
+	             System.out.println(gateParser.getStats().toString());
  	             
              } else {
             	 logger.info("Unrecognized parser type " + parserType + ", using NYAppealParse.");
@@ -78,8 +78,10 @@ public class Application {
              if (!parserType.equalsIgnoreCase(IParser.BOTH)) {
 	             System.out.println("Using parser " + parser.getClass().getSimpleName());
 	             parseAll(parser);
-	             System.out.print(parser.getStats().toString());
+	             System.out.println(parser.getStats().toString());
              }
+             System.out.println("Input dir: " + inputDir);
+             System.out.println("Output dir: " + new File(outputFile).getParent());
          } catch (Exception e) {
              e.printStackTrace();
          }

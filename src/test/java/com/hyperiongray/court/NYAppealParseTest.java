@@ -40,5 +40,4 @@ public class NYAppealParseTest {
         String [] args = {"-i", "test-data/ny_appeals", "-o", "test-output/parse", "-parser", "gate"};
         Application.main(args);
     }
-    
 }

@@ -39,7 +39,8 @@ public enum DataKey {
      Criminal (false),
      Civil (false),
      DistrictAttorneyProblem (false),
-     AdaProblem(false);
+     AdaProblem(false),
+     Justice;
      
      
      private boolean outputToFile;

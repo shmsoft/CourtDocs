@@ -72,6 +72,7 @@ public class Stats {
                         "County: " + ratio(get(DataKey.County), get(DataKey.FiledInDir)) + "%\n" +
                         "Mode of conviction: " + ratio(get(DataKey.ModeOfConviction), get(DataKey.Criminal)) + "%\n" +
                         "Keywords: " + ratio(get(DataKey.Keywords), get(DataKey.FiledInDir)) + "%\n" +
+                        "Interest of justice: " + ratio(get(DataKey.Justice), get(DataKey.FiledInDir)) + "%\n" +
                         "Number of output files: " + (get(DataKey.FileNumber) + 1) + "\n" +
                         "Runtime: " + ((new Date().getTime() - startDate.getTime()) / 1000 + " seconds");
     }

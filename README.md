@@ -7,6 +7,8 @@
 * Crawling all documents from the the 4 courts of appeal, downloading them and converting them from HTML to TXT
 * Parsing the docs, to summarize for stats.
 
+To run the applicatin(s), look into the 'scripts' folder
+
 
 Please note that all documentation is found [here](https://github.com/TeamHG-Memex/CourtDocs/tree/master/doc) in this project
 

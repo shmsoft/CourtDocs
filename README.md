@@ -6,6 +6,7 @@
 #### Pulling decisions from NY Courts of appeal
 * Crawling all documents from the the 4 courts of appeal, downloading them and converting them from HTML to TXT
 * Parsing the docs, to summarize for stats.
+#### Parsing the text appeal documents, producing a csv file with extracted attributes
 
 To run the applicatin(s), look into the 'scripts' folder
 

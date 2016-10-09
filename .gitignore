@@ -12,3 +12,4 @@ archive/
 .settings
 .project
 bin
+nbactions.xml

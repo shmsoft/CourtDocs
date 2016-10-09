@@ -21,24 +21,24 @@ import org.slf4j.LoggerFactory;
 public class NYAppealUtil {
     private static final Logger logger = LoggerFactory.getLogger(NYAppealUtil.class);
 
-    private static final String base = "http://www.courts.state.ny.us/reporter/slipidx/aidxtable";
+    private static final String BASE = "http://www.courts.state.ny.us/reporter/slipidx/aidxtable";
     private static final List<String> months = Arrays.asList("january", "february", "march", "april",
             "may", "june", "july", "august", "september", "october", "november", "december");
-    private static final String extension = ".shtml";
+    private static final String EXTENSION = ".shtml";
 
-    private static final String linkRegex = "\\./3dseries.+\\.htm";
-    private static final String downloadBase = "http://www.courts.state.ny.us/reporter/";
+    private static final String LINK_REGEX = "\\./3dseries.+\\.htm";
+    private static final String DOWNLOAD_BASE = "http://www.courts.state.ny.us/reporter/";
 
-    private static String NAME_PLACEHOLDER = "%name%";
-    private static Pattern INITIALS_PATTERN_1 = Pattern.compile("(\\w{3,}, [A-Z]\\.[A-Z]\\.)"); // Prudenti P.J.
-    private static Pattern INITIALS_PATTERN_2 = Pattern.compile("([A-Z]\\. \\w{3,}, [A-Z]{2,2}\\.)"); // S. Miller JJ.
-    private static Pattern INITIALS_PATTERN_3 = Pattern.compile("(\\w{3,}, [A-Z]{2,2}\\.)"); // Miller JJ.
-    private static Pattern INITIALS_PATTERN_4 = Pattern.compile("(\\w{3,} JR\\.)", Pattern.CASE_INSENSITIVE); // Egan Jr.
-    private static Pattern INITIALS_PATTERN_5 = Pattern.compile("(\\w{3,}, JR\\., [A-Z]\\.[A-Z]\\.)", Pattern.CASE_INSENSITIVE); // Egan, JR., S.J.,
-    private static Pattern INITIALS_PATTERN_6 = Pattern.compile("(\\w{3,} [A-Z]\\. \\w{3,})", Pattern.CASE_INSENSITIVE); // Michael C. Green
-    private static Pattern INITIALS_PATTERN_7 = Pattern.compile("(\\w{3,} \\w{3,}, J\\.)", Pattern.CASE_INSENSITIVE); // William Smith J.
+    private static final String NAME_PLACEHOLDER = "%name%";
+    private static final Pattern INITIALS_PATTERN_1 = Pattern.compile("(\\w{3,}, [A-Z]\\.[A-Z]\\.)"); // Prudenti P.J.
+    private static final Pattern INITIALS_PATTERN_2 = Pattern.compile("([A-Z]\\. \\w{3,}, [A-Z]{2,2}\\.)"); // S. Miller JJ.
+    private static final Pattern INITIALS_PATTERN_3 = Pattern.compile("(\\w{3,}, [A-Z]{2,2}\\.)"); // Miller JJ.
+    private static final Pattern INITIALS_PATTERN_4 = Pattern.compile("(\\w{3,} JR\\.)", Pattern.CASE_INSENSITIVE); // Egan Jr.
+    private static final Pattern INITIALS_PATTERN_5 = Pattern.compile("(\\w{3,}, JR\\., [A-Z]\\.[A-Z]\\.)", Pattern.CASE_INSENSITIVE); // Egan, JR., S.J.,
+    private static final Pattern INITIALS_PATTERN_6 = Pattern.compile("(\\w{3,} [A-Z]\\. \\w{3,})", Pattern.CASE_INSENSITIVE); // Michael C. Green
+    private static final Pattern INITIALS_PATTERN_7 = Pattern.compile("(\\w{3,} \\w{3,}, J\\.)", Pattern.CASE_INSENSITIVE); // William Smith J.
 
-    private static Pattern[] INITIAL_PATTERNS = {INITIALS_PATTERN_5, INITIALS_PATTERN_1, INITIALS_PATTERN_2, INITIALS_PATTERN_3, INITIALS_PATTERN_4, INITIALS_PATTERN_6, INITIALS_PATTERN_7};
+    private static final Pattern[] INITIAL_PATTERNS = {INITIALS_PATTERN_5, INITIALS_PATTERN_1, INITIALS_PATTERN_2, INITIALS_PATTERN_3, INITIALS_PATTERN_4, INITIALS_PATTERN_6, INITIALS_PATTERN_7};
     private static List<String> countiesList;
 
     /**
@@ -53,7 +53,7 @@ public class NYAppealUtil {
         for (int court = 1; court <= 4; ++court) {
             for (int year = 2003; year <= currentYear; ++year) {
                 for (String month : months) {
-                    list.add(base + "_" + court + "_" + year + "_" + month + extension);
+                    list.add(BASE + "_" + court + "_" + year + "_" + month + EXTENSION);
                 }
             }
         }
@@ -62,9 +62,9 @@ public class NYAppealUtil {
 
     public List<String> listDownloadLinks(String htmlPage) {
         List<String> list = new ArrayList<>();
-        Matcher m = Pattern.compile(linkRegex).matcher(htmlPage);
+        Matcher m = Pattern.compile(LINK_REGEX).matcher(htmlPage);
         while (m.find()) {
-            list.add(downloadBase + m.group());
+            list.add(DOWNLOAD_BASE + m.group());
         }
         return list;
     }
@@ -78,12 +78,12 @@ public class NYAppealUtil {
     }
 
     public static List<String> splitToSentences(String text) {
-        List<SearchResult> replacedPatterns = new ArrayList<SearchResult>();
+        List<SearchResult> replacedPatterns = new ArrayList<>();
         // temporarily replace names with initials to placeholder so it is easier to split text to sentences
         for (Pattern pattern : INITIAL_PATTERNS) {
             List<SearchResult> results = findNamesWithInitials(text, pattern);
             for (SearchResult r : results) {
-                if (text.indexOf(r.text) >= 0) {
+                if (text.contains(r.text)) {
                     text = text.replaceFirst(r.text, NAME_PLACEHOLDER);
                     replacedPatterns.add(r);
                 }
@@ -97,7 +97,7 @@ public class NYAppealUtil {
         });
         String[] sentences = text.split("(?<=\\.\"?|\\s{2})");
         int currentNameIdx = 0;
-        List<String> ret = new ArrayList<String>();
+        List<String> ret = new ArrayList<>();
         // put names back
         for (String sentence : sentences) {
             int from = 0;
@@ -136,14 +136,14 @@ public class NYAppealUtil {
         String[] words = s.split(" ");
         int probablyNotNamePart = 0;
         int wordsCnt = 0;
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].isEmpty()) {
+        for (String word : words) {
+            if (word.isEmpty()) {
                 continue;
             }
-            if (!Character.isUpperCase(words[i].charAt(0))) {
+            if (!Character.isUpperCase(word.charAt(0))) {
                 probablyNotNamePart++;
             }
-            if (!words[i].equalsIgnoreCase("the")) {
+            if (!word.equalsIgnoreCase("the")) {
                 wordsCnt++;
             }
         }

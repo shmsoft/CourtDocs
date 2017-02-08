@@ -86,6 +86,7 @@ public class TextParser implements IParser {
     private Pattern CONVICTION_PATTERN = Pattern.compile("plea\\s*of\\s*guilty|jury\\s*verdict|nonjury\\s*trial", Pattern.CASE_INSENSITIVE);
    
     private Pattern CRIMES_PATTERN_1 = Pattern.compile("upon\\s(his|her)\\splea\\sof\\sguilty,\\sof\\s(.*)\\.", Pattern.CASE_INSENSITIVE);
+    // TODO instead of him/his it should probably be him/her
     private Pattern CRIMES_PATTERN_2 = Pattern.compile("convicting\\s(him|his)\\sof\\s(.*),\\supon", Pattern.CASE_INSENSITIVE);
     
     

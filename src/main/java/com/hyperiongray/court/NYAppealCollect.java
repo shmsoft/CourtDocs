@@ -29,7 +29,8 @@ public class NYAppealCollect {
     private int documentsCollected;
     private boolean verify;
     private float sample = 1; // default is to download all
-    private int delay = 20; // milliseconds
+    private final int delay = 20; // milliseconds, taking into account that 
+    // additional delay results from PDF conversion
 
     public static void main(String[] args) {
         formOptions();
@@ -46,8 +47,8 @@ public class NYAppealCollect {
             instance.startTime = new Date();
             instance.prepareOutput();
             instance.downloadDocuments();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ParseException | IOException e) {
+            logger.error("Can'd download", e);
         }
         logger.info("Processing stats:");
         logger.info("Documents processed: {}", instance.documentsCollected);
@@ -87,7 +88,7 @@ public class NYAppealCollect {
         List<String> urls = new NYAppealUtil().listURLs();
         Tika tika = new Tika();
         for (String url : urls) {
-            logger.debug("URL for downloads: {}", url);
+            logger.debug("URL for crawling: {}", url);
             GetPull pull = new GetPull();
             pull.setUrl(url);
             String htmlPage = pull.getResponse();
@@ -96,11 +97,11 @@ public class NYAppealCollect {
             for (String downloadLink : downloadLinks) {
                 logger.debug("Download link: {}", downloadLink);
                 ++documentsCollected;
-                if (verify) {
-                    // verify means don't download, just list
+                if (Math.random() > sample) {
                     continue;
                 }
-                if (Math.random() > sample) {
+                if (verify) {
+                    // verify means don't download, just list
                     continue;
                 }
                 try {
@@ -110,11 +111,11 @@ public class NYAppealCollect {
                     String fileName = new File(downloadLink).getName();
                     Files.write(courtDoc, new File(outputDir + "/html/" + fileName), Charset.defaultCharset());
                     NYAppealUtil.sleep(delay);
-                    
+
                     // parsed as text
                     InputStream stream = new ByteArrayInputStream(courtDoc.getBytes(StandardCharsets.UTF_8));
                     String htmlText = tika.parseToString(stream, metadata);
-                    
+
                     // TODO - we are not using metadata as yet, but it may be a good idea
                     Files.write(htmlText, new File(outputDir + "/txt/" + fileName + ".txt"), Charset.defaultCharset());
 

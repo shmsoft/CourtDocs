@@ -25,6 +25,7 @@ import com.hyperiongray.court.parser.TextParser;
 import com.hyperiongray.court.parser.gate.GATEParser;
 
 public class Application {
+
     private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     private static Options options;
@@ -114,13 +115,17 @@ public class Application {
         inputDir = cmd.getOptionValue("inputDir");
         outputFile = cmd.getOptionValue("outputFile");
         parserType = cmd.getOptionValue("parser");
-        if (parserType == null) parserType = "text"; 
+        if (parserType == null) {
+            parserType = "text";
+        }
         gateHome = cmd.getOptionValue("gate-home");
         rawMode = cmd.hasOption("raw");
         if (cmd.hasOption("breakSize")) {
             breakSize = Integer.parseInt(cmd.getOptionValue("breakSize"));
         }
-        sample = Integer.parseInt(cmd.getOptionValue("sample"));
+        if (cmd.getOptionValue("sample") != null) {
+            sample = Integer.parseInt(cmd.getOptionValue("sample"));
+        }
         return true;
     }
 
@@ -162,8 +167,8 @@ public class Application {
                 buf.append("\n");
                 FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + ".csv"), buf.toString(), true);
                 if (rawMode) {
-                    FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + "_" +
-                            parser.getClass().getSimpleName().toLowerCase() + "_raw.txt"), raw_buffer.toString(), true);
+                    FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + "_"
+                            + parser.getClass().getSimpleName().toLowerCase() + "_raw.txt"), raw_buffer.toString(), true);
                 }
                 parser.getStats().inc(DataKey.Metadata);
                 ++lineCount;
@@ -190,7 +195,7 @@ public class Application {
             }
         });
         // TODO - refactor for better coding
-        for (File file: files) {
+        for (File file : files) {
             System.out.println(file.getPath());
             if (sampleCount >= sample) {
                 break;
@@ -211,8 +216,12 @@ public class Application {
         try {
             File[] files = new File(outputFile).getParentFile().listFiles();
             for (File file : files) {
-                if (file.getName().endsWith("csv")) file.delete();
-                if (file.getName().endsWith("_raw.txt")) file.delete();
+                if (file.getName().endsWith("csv")) {
+                    file.delete();
+                }
+                if (file.getName().endsWith("_raw.txt")) {
+                    file.delete();
+                }
             }
         } catch (Exception e) {
             logger.warn("Cleaning exception, but that's OK", e);
@@ -232,6 +241,5 @@ public class Application {
         buf.append("\n");
         return buf.toString();
     }
-
 
 }

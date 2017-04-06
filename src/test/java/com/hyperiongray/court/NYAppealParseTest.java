@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import com.hyperiongray.court.parser.DataKey;
@@ -23,7 +22,6 @@ public class NYAppealParseTest {
         File[] files = new File("test-data/ny_appeals").listFiles();
         Arrays.sort(files);
         for (File file: files) {
-            String text = FileUtils.readFileToString(file);
             Map<DataKey, String> answer = parser.parseFile(file);
             for (int e = 0; e < DataKey.values().length; ++e) {
                 String key = DataKey.values()[e].toString();
@@ -37,7 +35,7 @@ public class NYAppealParseTest {
     @Test
     public void testCompleteParse() throws IOException {
         System.out.println("testCompleteParse");
-        String [] args = {"-i", "test-data/ny_appeals", "-o", "test-output/parse", "-parser", "gate"};
+        String [] args = {"-i", "test-data/ny_appeals", "-o", "test-output/parse", "-parser", "text"};
         Application.main(args);
     }
 }

@@ -8,10 +8,10 @@
 * Parsing the docs, to summarize for stats.
 #### Parsing the text appeal documents, producing a csv file with extracted attributes
 
-To run the applicatin(s), look into the 'scripts' folder
+To run the application(s), look into the 'scripts' folder
 
 
-Please note that all documentation is found [here](https://github.com/TeamHG-Memex/CourtDocs/tree/master/doc) in this project
+Please note that all documentation is found in the 'doc' folder in this project
 
 ## Data
 
@@ -20,3 +20,8 @@ About 100K of appeal documents scraped from the NY State Court of appeals are fo
 
 The (hopefully) latest results of processing, extracted with this CourtDoc regex's are 
 [here](https://s3-us-west-2.amazonaws.com/darpa-memex/CourtDocs/CourtDocs-Output.zip)
+
+## Development
+* For development I prefer IntelliJ.
+    * It allows multiple configurations for running and debugging
+    * Overall better, I can't say where NetBeans would exceed IntelliJ, except in the UI editor

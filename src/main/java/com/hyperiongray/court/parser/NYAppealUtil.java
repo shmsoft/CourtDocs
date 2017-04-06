@@ -49,9 +49,12 @@ public class NYAppealUtil {
 
     public List<String> listURLs() {
         List<String> list = new ArrayList<>();
-        int currentYear = 2015; // can modify this to calculate, later if we keep using the code
+//        int endYear = 2015; // can modify this to calculate, later if we keep using the code
+//        int startYear = 2003;
+      int endYear = 2017;
+      int startYear = 2015;
         for (int court = 1; court <= 4; ++court) {
-            for (int year = 2003; year <= currentYear; ++year) {
+            for (int year = startYear; year <= endYear; ++year) {
                 for (String month : months) {
                     list.add(BASE + "_" + court + "_" + year + "_" + month + EXTENSION);
                 }

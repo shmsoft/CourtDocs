@@ -39,7 +39,6 @@ public enum DataKey {
      Criminal (false),
      Civil (false),
      DistrictAttorneyProblem (false),
-     AdaProblem(false),
      Justice;
      
      

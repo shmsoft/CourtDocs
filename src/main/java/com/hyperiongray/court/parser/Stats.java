@@ -67,7 +67,7 @@ public class Stats {
                         "Judge: " + ratio(get(DataKey.Judge), get(DataKey.FiledInDir)) + "%\n" +
                         "Other judges present: " + ratio(get(DataKey.Judges), get(DataKey.FiledInDir)) + "%\n" +
                         "District attorney: " + success(get(DataKey.DistrictAttorneyProblem), get(DataKey.Criminal)) + "%\n" +
-                        "Assistant district attorney: " + success(get(DataKey.AdaProblem), get(DataKey.Criminal)) + "%\n" +
+                        "Assistant district attorney: " + success(get(DataKey.ADA), get(DataKey.Criminal)) + "%\n" +
                         "Crimes: " + ratio(get(DataKey.Crimes), get(DataKey.Criminal)) + "%\n" +
                         "County: " + ratio(get(DataKey.County), get(DataKey.FiledInDir)) + "%\n" +
                         "Mode of conviction: " + ratio(get(DataKey.ModeOfConviction), get(DataKey.Criminal)) + "%\n" +

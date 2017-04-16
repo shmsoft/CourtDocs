@@ -133,7 +133,6 @@ public class NYAppealCollect {
             FileUtils.cleanDirectory(new File(outputDir));
             new File(outputDir + "/html").mkdirs();
             new File(outputDir + "/txt").mkdirs();
-
         }
     }
 }

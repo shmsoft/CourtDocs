@@ -1,5 +1,16 @@
 package com.hyperiongray.court;
 
+import com.google.common.io.Files;
+import com.hyperiongray.court.parser.DataKey;
+import com.hyperiongray.court.parser.IParser;
+import com.hyperiongray.court.parser.TextParser;
+import com.hyperiongray.court.parser.gate.GATEParser;
+import org.apache.commons.cli.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -7,22 +18,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import com.google.common.io.Files;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hyperiongray.court.parser.DataKey;
-import com.hyperiongray.court.parser.IParser;
-import com.hyperiongray.court.parser.TextParser;
-import com.hyperiongray.court.parser.gate.GATEParser;
 
 public class Application {
 
@@ -164,8 +159,7 @@ public class Application {
                 }
                 raw_buffer.append("========\n");
                 buf.deleteCharAt(buf.length() - 1);
-                buf.append("\n");
-                FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + ".csv"), buf.toString(), true);
+                FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + ".csv"), "\"" + buf.toString() + "\"\n", true);
                 if (rawMode) {
                     FileUtils.write(new File(outputFile + parser.getStats().get(DataKey.FileNumber) + "_"
                             + parser.getClass().getSimpleName().toLowerCase() + "_raw.txt"), raw_buffer.toString(), true);

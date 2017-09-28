@@ -98,7 +98,7 @@ public class NYAppealUtil {
                 return Integer.compare(o1.from, o2.from);
             }
         });
-        String[] sentences = text.split("(?<=\\.\"?|\\s{2})");
+        String[] sentences = text.split("(?<=\\.$\"?|\\s{2})");
         int currentNameIdx = 0;
         List<String> ret = new ArrayList<>();
         // put names back

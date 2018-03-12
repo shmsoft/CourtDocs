@@ -1,0 +1,3 @@
+2018-03-11
+1. Added DefendantORAppellant regex in text parser for getting defendant/appellant name
+2. Changed Defendant

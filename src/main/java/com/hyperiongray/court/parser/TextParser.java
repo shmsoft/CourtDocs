@@ -23,6 +23,7 @@ public class TextParser implements IParser {
     private final static int MAX_FIELD_LENGTH = 100;
     // more than that is probably a bug, so don't make it a parameter
     public static final String PARSER_TYPE = "text";
+    public static final String COMMON_STR_REGX = "The People of the State of New York, (Appellant|Respondent|Defendant Appellant), v";
     private Stats stats = new Stats();
 
     private String months =
@@ -94,6 +95,8 @@ public class TextParser implements IParser {
     private Pattern JUDGE_PATTERN =
             Pattern.compile("(Court|County|Court of Claims) \\(.+?\\)");
     private Pattern IN_PARENTHESES_PATTERN = Pattern.compile("\\(.+\\)");
+    public static final String APPELLANT_PATTERN_STR = "The People of the State of New York, (Appellant|Respondent|Defendant Appellant), .* (Appellant|Respondent|Defendant Appellant).";
+    private final Pattern APPELLANT = Pattern.compile(APPELLANT_PATTERN_STR);
 
     //rendered on or about October 26, 2007
     //Judgment, Supreme Court, Bronx County (William Mogulescu, J.), rendered on or about October 26, 2007, unanimously affirmed.
@@ -123,7 +126,7 @@ public class TextParser implements IParser {
     private Pattern JUDGES_3_PATTERN =
             Pattern.compile("^Concur[-—](.*)$", Pattern.CASE_INSENSITIVE);
 
-    private final String DEF_APP = "defendant-appellant";
+    private final String DEF_APP = "New York, (respondent|Respondent)";
     private Pattern DEFENDANT_APPELLANT_PATTERN =
             Pattern.compile(DEF_APP + "[s]?", Pattern.CASE_INSENSITIVE);
     private Pattern DEFENDANT_RESPONDENT_PATTERN =
@@ -293,7 +296,13 @@ public class TextParser implements IParser {
                         value = "";
                     }
                     continue;
-
+                 case DefendantORAppellant:
+                    m = APPELLANT.matcher(textFlow);
+                    if (m.find()) {
+                        value = m.group();
+                        info.put(key, value.replaceAll(COMMON_STR_REGX, ""));
+                    }
+                    continue;
                 case Keywords:
                     value = findAll(text, keywords);
                     info.put(key, value);
